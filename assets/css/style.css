@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f5;
+  color: #202b28;
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+main {
+  width: min(100% - 2rem, 960px);
+  margin: 3rem auto;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+a {
+  color: #14664e;
+  text-underline-offset: 0.25em;
+}
+
+a:hover {
+  color: #0a4634;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
+
+.project-link {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  padding-block: 0.75rem;
+  font-size: 1.125rem;
+}
+
+.sketch-stage {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #e4ece8;
+}
+
+.sketch-stage canvas {
+  display: block;
+}
