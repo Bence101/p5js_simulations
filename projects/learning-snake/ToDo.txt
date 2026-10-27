@@ -1,0 +1,46 @@
+// tegyél bele büntetést a túl hosszú alma találathoz. Méghozzá úgy, hogy kevés almánál ez arányaiban nagy büntetés legyen, de ennek a büntetésnek a mértéke degradálódjon sok alma esetén (pl négyzetes vagy hasonló tagokkal játszás)
+  // ez elvben ráveszi a snaket, hogy az elején elkezdjen jobbra és balra is megtanulni menni (ne exploitolja a szokásos "nagy kört megyek" stratégiát)
+  // elvben pont ugyanazt kellene hoznia, mint a jobb-bal kanyar plusz pontnak
+
+
+// 20221017
+  // √ ki kellene próbálni más NN arhitektúrával - a nagyobb NN sem volt sikeresebb
+  // ha úgy sem tanul elég jól, akkor a reward függvénybe bele lehet építeni, hogy preferálja a mindkét irányba történő kanyarodást -> ezt csak végső esetben csinálnám, vagy ha már működik gyorsasági tesztként, mert kicsit csalásnak érzem
+
+
+// 20221016
+  // átdolgoztam, hogy a többihez hasonlóan lássa az almát is
+  // így már nagyon szépen viselkedik, jól tanul.
+  // sajnos még így is csak 20-22 almáig jut 5 körüli átlaggal
+
+
+// továbbra sem tanul, jelenleg sok a 3 lépés utáni halál, ami utána beragad
+  // √ teszteld a mutáció működését!
+  // √ hogyan lehetne kerülni a felülreprezentált helyzeteket? (pl 3 utáni halál)
+  // √ valamiért teljesen érthetetlen okból is van, hogy meghal 3 után, ez biztosan bug!
+    // √ elképzelhető, hogy valamilyen referencia hiba van mögötte! -> elvileg nem volt
+    // √ manuálisan is reprodukálható (3 jobb kanyar után meghal (valószínűleg a 4-es csekkolás működik valamiért rosszul...))
+    // √ lehet, hogy ez nem is hiba, hanem normál működés. A 4 egy változtatás miatt csökkent le 3-ra (a snakegame move függvényébe csináltam egy korai kilépést)
+
+// 20221010
+  // √ random start implementálása
+  // √ tesztelgettem, hogy miért nem tanul
+  
+
+
+
+
+// a fel/le irányokkal lehet probléma!
+// A ROWS COLUMNS LOGIKA NEM MINDENHOL KONZISZTENS
+  // cseréld ki mindenhol width-height-re, az segít egyértelműsíteni!
+
+// lehetséges snakeView változók
+  // egyelőre kész
+  // fal táv előre, hátra, jobbra, balra (4)
+  // fal táv átlósan 4 irányba (4)
+  // saját táv ugyan ilyen irányokban (8) (tail)
+  // fej-alma x és y távolság előjelesen (2)
+  // snake méret/táblaméret (1)
+  // a körülötte lévő x*x-es négyzetből mennyi fal/saját test? (1, 2 ... akár több féle x-el)
+  // lastDirection x, y -> szerintem nem lényeges, mindent relatív tervezek megadni, mintha FPS nézet lenne
+  // konvulúció? (ez csak ötlet, ne csináld)
