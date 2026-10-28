@@ -1,35 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.1/math.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watch 300 neural-network Snake agents evolve with a genetic algorithm, with 49 sampled boards on a canvas and a chart of generation scores and fitness.">
+    <title>Learning Snake | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./math.js" defer></script>
+    <script src="./Chart.min.js" defer></script>
+    <script src="./snakeGame.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./neuralNetwork.js" defer></script>
+    <script src="./population.js" defer></script>
+    <script src="./lineChart.js" defer></script>
+    <script src="./sketch.js" defer></script>
   </head>
-  
-  
   <body>
-    <main>
+    <main data-project-page data-layout="stacked" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/learning-snake">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Learning Snake</h1>
+        <p class="project-summary">A population of 300 neural-network agents learns to play Snake on 8&times;8 boards. Each generation, parents are chosen by fitness, recombined, and mutated to produce the next population. The canvas shows 49 randomly sampled agents playing at once, and a chart tracks the best score, average score, and average fitness of every finished generation.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" style="--canvas-logical-width: 700px; --canvas-aspect-ratio: 1 / 1;" role="img" aria-label="A seven by seven grid of 49 small green Snake boards on a gray 700 by 700 canvas. Each board shows an agent's yellow snake and orange apple while the agents play simultaneously." aria-describedby="generation-readout">
+        <noscript>This simulation requires JavaScript. Enable it to run the simulation and use its controls.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Simulation speed</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="step-rate">
+            Animation frames per simulation step
+            <span class="simulation-control__value"><output for="step-rate">1</output> frame(s) per step</span>
+            <input id="step-rate" name="stepRate" type="range" min="1" max="30" step="1" value="1" aria-describedby="step-rate-hint">
+          </label>
+          <p id="step-rate-hint" class="control-hint">1 is the original speed: every agent moves once per animation frame. Higher values wait that many frames between steps, slowing the simulation without changing the learning algorithm.</p>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Actions and shortcuts:</strong> change the speed slider, use Restart Simulation or Reset Everything, or use the original testing keys. With no control or link focused, <kbd>Enter</kbd> advances every agent in the current generation by one step. <kbd>Left</kbd>, <kbd>Up</kbd>, and <kbd>Right</kbd> each advance only the first agent by one step; the arrow direction is ignored because the agent's own neural network chooses the move. The shortcuts are ignored while a form control, button, or link has focus.</li>
+          <li><strong>Animation frames per simulation step (1&ndash;30, default 1):</strong> applies immediately. At 1, each animation frame moves every agent once. At 2, a step happens every second frame, and so on. The end-of-generation evaluation uses the same timing.</li>
+          <li><strong>Restart Simulation:</strong> discards the current population, starts generation 1 with 300 new random agents, clears the chart and readout, and chooses a new random sample of 49 agents to display. It keeps the current speed value.</li>
+          <li><strong>Reset Everything:</strong> restores the speed to 1 frame per step and restarts the simulation as described above. It does not reload the page.</li>
+          <li><strong>Canvas:</strong> the logical canvas stays 700&times;700 and scales down uniformly on smaller screens. It shows 49 of the 300 agents, sampled at random with replacement, so an agent can appear more than once. There are no mouse or touch controls on the canvas.</li>
+          <li><strong>Generation chart:</strong> it appears below the Project Information section. The horizontal axis is the generation number. The left axis shows the best score and average score, which count apples eaten; the right axis shows average fitness. A text summary of the latest finished generation appears below the chart.</li>
+          <li><strong>Native keyboard controls:</strong> use Tab and Shift+Tab to move between controls, the arrow keys for the slider, and Enter or Space for buttons.</li>
+        </ul>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>These notes come from the original Hungarian source comments and <a href="./ToDo.txt">ToDo.txt</a>; they are translated here and have not been implemented as part of this page.</p>
+        <ul>
+          <li><strong>GUI:</strong> the original plan was to work out a GUI (<a href="./snakeGame.js">snakeGame.js</a>, line 13). This page only adds the speed control.</li>
+          <li><strong>Reward shaping:</strong> add a penalty for taking too long to reach an apple. It should be proportionally large when there are few apples and fade as the snake eats more, for example with squared terms. In theory this pushes the snake to learn both left and right turns early instead of repeating a big-circle strategy (<a href="./ToDo.txt">ToDo.txt</a>, lines 1&ndash;3).</li>
+          <li><strong>Last-resort idea:</strong> if learning stays poor, build a preference for turning in both directions into the reward function. The author considered this a last resort or speed test and felt it was partly cheating (<a href="./ToDo.txt">ToDo.txt</a>, line 8).</li>
+          <li><strong>Direction and coordinate checks:</strong> the up/down directions may have a problem, and the rows/columns logic is not consistent everywhere. The note suggests using width and height consistently (<a href="./ToDo.txt">ToDo.txt</a>, lines 33&ndash;35).</li>
+          <li><strong>Possible vision inputs:</strong> the notes list signed head-to-apple x/y distances, snake size relative to board size, and wall/body counts in surrounding x&times;x squares as candidate inputs. Convolution is marked as only an idea (<a href="./ToDo.txt">ToDo.txt</a>, lines 37&ndash;46). The current network uses 24 inputs: wall, tail, and apple distances in eight directions.</li>
+          <li><strong>Code cleanup:</strong> add a <code>doCrossover</code> parameter (<a href="./population.js">population.js</a>, line 33); rename <code>populationNotDone</code> (<a href="./population.js">population.js</a>, line 11); refactor <code>hadMultiDirection</code> (<a href="./snakeGame.js">snakeGame.js</a>, line 244); and decide whether <code>stepSinceLastApple</code> belongs to the agent or the game (<a href="./snakeGame.js">snakeGame.js</a>, line 127).</li>
+          <li><strong>Neural-network code:</strong> carry all improvements over to the NNVisual project (<a href="./neuralNetwork.js">neuralNetwork.js</a>, line 1); split <code>predict</code> into feedforward and prediction (line 19); and move cost functions into a separate class like the activation functions (lines 137 and 148).</li>
+          <li><strong>Disclaimers:</strong> a 2022-10-16 note says that even after the apple-vision rework the snakes only reached 20&ndash;22 apples with an average of about 5 (<a href="./ToDo.txt">ToDo.txt</a>, lines 11&ndash;14). The population size note says larger populations should work but the display would show little of them (<a href="./sketch.js">sketch.js</a>, line 10), and the displayed sample is currently random (line 17). In <a href="./neuralNetwork.js">neuralNetwork.js</a>, <code>getNNData</code> is untested (line 162), <code>randomizeData</code> only works for initialization (line 214), <code>calculateAccuracy</code> only works for binary classification (line 234), and <code>crossover</code> has no schema check between networks (line 288).</li>
+        </ul>
+      </div>
+      <div data-project-slot="extra">
+        <section class="generation-statistics" aria-labelledby="generation-statistics-title">
+          <h2 id="generation-statistics-title">Generation Statistics</h2>
+          <p id="chart-description" class="control-hint">Line chart by generation number. The left axis shows the best score and average score; the right axis shows average fitness.</p>
+          <div class="chart-container">
+            <canvas id="myChart" role="img" aria-labelledby="generation-statistics-title" aria-describedby="chart-description generation-readout">The generation statistics chart requires JavaScript.</canvas>
+          </div>
+          <p id="generation-readout" class="generation-readout">No generation has finished yet.</p>
+        </section>
+      </div>
     </main>
-    
-    
-    <div class="chartContainer" style="height: 200px; width: 400px;">
-      <h3>Number of agents</h3>
-      <canvas id="myChart"></canvas>
-    </div>
-    
-    <script src="snakeGame.js"></script>
-    <script src="sketch.js"></script>
-    <script src="utils.js"></script>
-    <script src="neuralNetwork.js"></script>
-    <script src="population.js"></script>
-    <script src="test.js"></script>
-    <script src="lineChart.js"></script>
-
-
-    
   </body>
 </html>

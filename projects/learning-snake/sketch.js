@@ -15,7 +15,7 @@ let stat = []
 let population
 let snakeGameVises = []
 let nSnakesToVis = 49 // jelenleg random választom ki őket
-const SNAKENUMSTOVIS = Array.from({ length: nSnakesToVis }, () => Math.floor(Math.random() * POPSIZE));
+let SNAKENUMSTOVIS = []
 
 // tickers
 let stepRate = 1 // snake step rate
@@ -27,8 +27,7 @@ let nn2
 let newChild
 
 function setup() {
-  print(11)
-  createCanvas(700, 700);
+  createCanvas(700, 700).parent('sketch');
   for (let i=0; i<nSnakesToVis;i++) {
     let visRows = floor(math.sqrt(nSnakesToVis))
     let xShift = math.floor(i / visRows)
@@ -37,7 +36,6 @@ function setup() {
                                          BOARDSIZE, CELLSIZE))
   }
 
-  population = new Population(POPSIZE, SnakeAgent, [BOARDSIZE])
   // print(population.agents[0].agent)
   
 //   nn1 = new NeuralNetwork([4,3,2])
@@ -49,6 +47,35 @@ function setup() {
 //   print('nn2', nn2.weightTables[1]._data)
 
 //   print('child', newChild.weightTables[1]._data)
+
+  ProjectPage.connect({
+    applySettings(settings) {
+      stepRate = settings.stepRate
+    },
+    restart: restartSimulation,
+  })
+}
+
+function restartSimulation(settings) {
+  stepRate = settings.stepRate
+  popCnt = 0
+  totalFrames = 0
+  stat = []
+  SNAKENUMSTOVIS = Array.from({ length: nSnakesToVis }, () => Math.floor(Math.random() * POPSIZE))
+  population = new Population(POPSIZE, SnakeAgent, [BOARDSIZE])
+  resetChart(scoreChart)
+  showGenerationStats()
+}
+
+function showGenerationStats() {
+  const readout = document.getElementById('generation-readout')
+  if (popCnt === 0) {
+    readout.textContent = 'No generation has finished yet.'
+    return
+  }
+  readout.textContent = `Generation ${popCnt}: best score ${population.maxScore}, ` +
+    `average score ${population.avgScore.toFixed(2)}, ` +
+    `average fitness ${Math.round(population.avgFitness)}.`
 }
 
 function draw() {
@@ -68,6 +95,7 @@ function draw() {
       popCnt++
       population.calculateFitnesses()
       addData(scoreChart, popCnt, [population.maxScore, population.avgScore, population.avgFitness])
+      showGenerationStats()
 
       // print(popCnt,  
       //       population.maxScore,
@@ -89,7 +117,12 @@ function draw() {
 
 
 
-function keyPressed() {
+function keyPressed(event) {
+  // Keep the shortcuts away from native controls, buttons, and links.
+  if (event && event.target instanceof Element &&
+      event.target.closest('input, select, textarea, button, a[href]')) {
+    return
+  }
   // manuális teszteléshez ENTER: 1-es kígyó lépjen egyet
   let currentSnakeGame = population.agents[0]
   if (keyCode === LEFT_ARROW) {

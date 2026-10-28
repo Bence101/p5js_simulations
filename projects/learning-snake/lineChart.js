@@ -36,6 +36,7 @@ var scoreChart = new Chart(ctx, {
     },
     // Configuration options go here
     options: {stacked: false,
+            maintainAspectRatio: false,
             scales: {
               yAxes: [{
                 id: 'A',
@@ -57,5 +58,13 @@ function addData(chart, label, data) {
     chart.data.datasets[0].data.push(data[0])
     chart.data.datasets[1].data.push(data[1])
     chart.data.datasets[2].data.push(data[2])
+    chart.update();
+}
+
+function resetChart(chart) {
+    chart.data.labels.splice(0, chart.data.labels.length, 0);
+    for (let dataset of chart.data.datasets) {
+        dataset.data.splice(0, dataset.data.length, 0);
+    }
     chart.update();
 }
