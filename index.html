@@ -3,17 +3,136 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="p5.js projektek portfolioja.">
-    <title>p5.js Portfolio</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <meta name="description" content="Bence kreatív kódolási műhelye. Interaktív p5.js szimulációk, tanuló algoritmusok és vizuális kísérletek, egy helyen.">
+    <meta name="theme-color" content="#141715">
+    <title>Bence / Kód &amp; mozgás</title>
+    <link rel="stylesheet" href="./assets/css/landing.css">
     <script src="./assets/js/main.js" defer></script>
   </head>
   <body>
-    <main>
-      <h1>p5.js Portfolio</h1>
-      <a class="project-link" href="./projects/bouncing-ball/index.html">Bouncing Ball <span aria-hidden="true">&rarr;</span></a>
-      <a class="project-link" href="./projects/particle-life/index.html">Particle Life <span aria-hidden="true">&rarr;</span></a>
-      <a class="project-link" href="./projects/learning-snake/index.html">Learning Snake <span aria-hidden="true">&rarr;</span></a>
+    <a class="skip-link" href="#projects">Ugrás a projektekhez</a>
+
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="Bence műhelye – az oldal elejére">
+        <span class="brand-mark" aria-hidden="true">b<span>.</span></span>
+        <span>Bence<span class="brand-caption">creative coding</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Fő navigáció">
+        <a href="#projects">Projektek</a>
+        <a href="#about">A műhelyről</a>
+        <a class="nav-github" href="https://github.com/Bence101/p5js_simulations">GitHub <span aria-hidden="true">&nearr;</span></a>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <aside class="intro" id="about" aria-labelledby="intro-title">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Egy kis digitális játszótér</p>
+        <h1 id="intro-title">A kód<br><span>mozgásban.</span></h1>
+        <p class="intro-description">Szia, Bence vagyok. Itt gyűjtöm a böngészőben futó szimulációimat és vizuális kísérleteimet.</p>
+        <p class="intro-invitation">Néhány egyszerű szabály.<br>Meglepően sok lehetőség.</p>
+        <a class="intro-link" href="#projects">Nézz körül <span aria-hidden="true">&darr;</span></a>
+
+        <div class="orbit-art" aria-hidden="true">
+          <svg viewBox="0 0 300 240" fill="none">
+            <path class="orbit-guide" d="M15 120h270M150 15v210" stroke-dasharray="3 7"/>
+            <circle class="orbit-guide" cx="150" cy="120" r="85"/>
+            <g class="orbit-system">
+              <ellipse class="orbit-ring" cx="150" cy="120" rx="125" ry="43" transform="rotate(-35 150 120)"/>
+              <ellipse class="orbit-ring orbit-ring-secondary" cx="150" cy="120" rx="125" ry="43" transform="rotate(35 150 120)"/>
+              <circle class="orbit-core" cx="150" cy="120" r="24"/>
+              <circle class="orbit-dot" cx="54" cy="164" r="7"/>
+              <circle class="orbit-dot-secondary" cx="245" cy="166" r="5"/>
+            </g>
+            <path class="orbit-guide" d="M24 28h12m-6-6v12M264 208h12m-6-6v12"/>
+          </svg>
+          <span>ötlet &rarr; kód &rarr; kísérlet</span>
+        </div>
+        <div class="intro-note">
+          <span class="note-symbol" aria-hidden="true">*</span>
+          <p>Önálló kis világok, egy helyen.<br>Mindegyik projekt külön is felfedezhető.</p>
+        </div>
+      </aside>
+
+      <section class="projects" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A műhelyből</p>
+            <h2 id="projects-title">Projektek <span class="project-count" data-project-count>03</span></h2>
+          </div>
+          <div class="view-switch" role="group" aria-label="Projektek elrendezése" hidden>
+            <button type="button" data-layout="grid" aria-pressed="true" aria-controls="project-grid">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg>
+              Rács
+            </button>
+            <button type="button" data-layout="list" aria-pressed="false" aria-controls="project-grid">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="4" height="4" rx="1"/><path d="M10 5h7"/><rect x="3" y="12" width="4" height="4" rx="1"/><path d="M10 14h7"/></svg>
+              Lista
+            </button>
+          </div>
+        </div>
+        <p class="projects-hint">Válassz egy kísérletet. A demók új lapon nyílnak meg, a gyűjtemény itt megvár.</p>
+
+        <div class="project-grid" id="project-grid" data-layout="grid">
+          <article class="project-card" data-accent="lilac">
+            <a class="project-card-link" href="./projects/particle-life/index.html" target="_blank" rel="noopener" aria-labelledby="particle-title particle-action">
+              <div class="project-image">
+                <img src="./assets/images/particle-life-simulation.png" alt="Színes részecskék fekete háttéren, alattuk a kölcsönhatásokat vezérlő mátrix." width="792" height="816" fetchpriority="high">
+                <span class="image-label">01 / Mesterséges élet</span>
+                <span class="image-open" aria-hidden="true">&nearr;</span>
+              </div>
+              <div class="project-content">
+                <ul class="project-tags" aria-label="Témák"><li>p5.js</li><li>Szimuláció</li></ul>
+                <h3 id="particle-title">Particle Life</h3>
+                <p>Vonzás, taszítás és színes részecskék. Egyszerű szabályokból összetett viselkedés.</p>
+                <span class="project-action" id="particle-action">Kipróbálom <span class="sr-only">(új lapon)</span><span aria-hidden="true">&nearr;</span></span>
+              </div>
+            </a>
+          </article>
+
+          <article class="project-card" data-accent="green">
+            <a class="project-card-link" href="./projects/learning-snake/index.html" target="_blank" rel="noopener" aria-labelledby="snake-title snake-action">
+              <div class="project-image">
+                <img src="./assets/images/learning-snake.png" alt="Egymás mellett futó Snake-játékok zöld rácsokon, különböző állapotú kígyókkal." width="642" height="638" decoding="async">
+                <span class="image-label">02 / Tanuló algoritmusok</span>
+                <span class="image-open" aria-hidden="true">&nearr;</span>
+              </div>
+              <div class="project-content">
+                <ul class="project-tags" aria-label="Témák"><li>p5.js</li><li>Neurális háló</li></ul>
+                <h3 id="snake-title">Learning Snake</h3>
+                <p>A klasszikus játék, egy kis csavarral: ezúttal nem te játszol, hanem az algoritmus tanul.</p>
+                <span class="project-action" id="snake-action">Kipróbálom <span class="sr-only">(új lapon)</span><span aria-hidden="true">&nearr;</span></span>
+              </div>
+            </a>
+          </article>
+
+          <article class="project-card" data-accent="peach">
+            <a class="project-card-link" href="./projects/bouncing-ball/index.html" target="_blank" rel="noopener" aria-labelledby="ball-title ball-action">
+              <div class="project-image">
+                <img src="./assets/images/bouncing-ball.png" alt="A Bouncing Ball demó világos hátterű játéktere." width="644" height="672" loading="lazy" decoding="async">
+                <span class="image-label">03 / Mozgás &amp; fizika</span>
+                <span class="image-open" aria-hidden="true">&nearr;</span>
+              </div>
+              <div class="project-content">
+                <ul class="project-tags" aria-label="Témák"><li>p5.js</li><li>Alapok</li></ul>
+                <h3 id="ball-title">Bouncing Ball</h3>
+                <p>Egy labda, egy játéktér és a mozgás öröme. Az első lépés a szimulációk világába.</p>
+                <span class="project-action" id="ball-action">Kipróbálom <span class="sr-only">(új lapon)</span><span aria-hidden="true">&nearr;</span></span>
+              </div>
+            </a>
+          </article>
+        </div>
+
+        <div class="collection-note">
+          <span class="collection-symbol" aria-hidden="true">+</span>
+          <p>A műhely nem áll meg.<span>Új ötleteknek mindig van hely.</span></p>
+          <a href="https://github.com/Bence101/p5js_simulations">A kód a GitHubon <span aria-hidden="true">&nearr;</span></a>
+        </div>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <p>Kíváncsiságból, kódból, p5.js-szel.</p>
+      <a href="#top">Vissza az elejére <span aria-hidden="true">&uarr;</span></a>
+    </footer>
   </body>
 </html>

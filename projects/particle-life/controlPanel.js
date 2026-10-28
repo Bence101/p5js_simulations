@@ -1,5 +1,7 @@
 let newCellGroupDecider = 0
 let colorChooser
+let nNewCellsSlider
+let brushSizeSlider
 let colorList = ["random", "red", "green", "blue", "yellow", "purple", "orange"];
 let mouseFunction = "create";
 
@@ -65,6 +67,9 @@ function createMouseFunctionRadio() {
 
 
 function mousePressed() {
+  if (!brushSizeSlider || !nNewCellsSlider || !cells || !isMouseOnCanvas()) {
+    return;
+  }
   if (mouseFunction === "create") {
     createCellsInCircle(mouseX, mouseY, brushSizeSlider.value());
   } else if (mouseFunction === "delete") {
