@@ -1,116 +1,163 @@
-let newCellGroupDecider = 0
-let colorChooser
-let nNewCellsSlider
-let brushSizeSlider
-let colorList = ["random", "red", "green", "blue", "yellow", "purple", "orange"];
-let mouseFunction = "create";
-
-
-
+let newCellGroupDecider;
+let nNewCells;
+let brushRadius;
+let mouseFunction;
+const colorList = ["random", "red", "green", "blue", "yellow", "purple", "orange"];
+const matrixGroupNames = ["Red", "Green", "Blue", "Yellow", "Purple", "Orange"];
+const matrixLabelColors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+const matrixControls = [];
 
 function initControlPanel() {
-  
-  connectionStrengthMatrix = createMatrix(nGroups, 1)
+  connectionStrengthMatrix = createMatrix(nGroups, 1);
+  const table = document.getElementById("interaction-matrix");
+  const header = table.tHead.insertRow();
+  const corner = document.createElement("th");
+  corner.scope = "col";
+  corner.textContent = "Affected / Neighbor";
+  header.appendChild(corner);
 
-  createMatrixButtons(connectionStrengthMatrix)
-  
-  
-  let regenerateMatrixButton = createButton("Regenerate matrix").mousePressed(regenerateMatrix);
-  regenerateMatrixButton.addClass("control-panel-button");
-  regenerateMatrixButton.position(0,10)
-  regenerateMatrixButton.parent('button-container')
-  
-  let regenerateCellsButton = createButton("Regenerate All Cells").mousePressed(regenerateCells);
-  regenerateCellsButton.addClass("control-panel-button");
-  regenerateCellsButton.position(0,50)
-  regenerateCellsButton.parent('button-container')
-
-  
-  
-  colorChooser = createSelect();
-  colorChooser.parent('button-container')
-  colorChooser.position(100, 10);
-  for (let i = 0; i < nGroups+1; i++) {
-    colorChooser.option(colorList[i]);
+  for (let column = 0; column < nGroups; column++) {
+    header.appendChild(createGroupHeading(column, "col"));
   }
-  colorChooser.changed(changeCellColor);
-  
-  
-  
-  nNewCellsSlider = createSlider(1, 30, 10);
-  nNewCellsSlider.parent('button-container')
-  nNewCellsSlider.position(200, 10);
-  
-  
-  
-  brushSizeSlider = createSlider(0, 100, 50);
-  brushSizeSlider.parent('button-container')
-  brushSizeSlider.position(200, 40);
-  
-  
-  createMouseFunctionRadio()
-}
 
+  for (let row = 0; row < nGroups; row++) {
+    const tableRow = table.tBodies[0].insertRow();
+    tableRow.appendChild(createGroupHeading(row, "row"));
+    matrixControls[row] = [];
+    for (let column = 0; column < nGroups; column++) {
+      const cell = tableRow.insertCell();
+      cell.className = "matrix-entry";
+      const input = document.createElement("input");
+      input.type = "range";
+      input.min = "-1";
+      input.max = "1";
+      input.step = "any";
+      input.id = `interaction-${row}-${column}`;
+      input.name = matrixSettingName(row, column);
+      input.setAttribute("aria-label", `Affected group ${row + 1} ${matrixGroupNames[row]}, neighbor group ${column + 1} ${matrixGroupNames[column]}`);
+      input.setAttribute("aria-describedby", "matrix-keyboard-hint");
+      // Capture native slider precision as the default, not the two-decimal display.
+      input.value = String(connectionStrengthMatrix[row][column]);
+      input.defaultValue = input.value;
+      const output = document.createElement("output");
+      output.htmlFor.add(input.id);
+      cell.append(input, output);
+      matrixControls[row][column] = { input, output, cell };
+    }
+  }
 
-function createMouseFunctionRadio() {
-  let radio = createRadio();
-  radio.option("create", "create cells");
-  radio.option("delete", "delete cells");
-  radio.selected('create');
-  radio.parent('button-container')
-  radio.position(340, 10);
-  
-  radio.changed(function() {
-    mouseFunction = this.value();
+  table.addEventListener("focusin", (event) => {
+    if (event.target instanceof HTMLInputElement) {
+      event.target.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+  });
+
+  table.addEventListener("keydown", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    let increment;
+    if (["+", "ArrowUp", "ArrowRight"].includes(event.key)) {
+      increment = 0.1;
+    } else if (["-", "ArrowDown", "ArrowLeft"].includes(event.key)) {
+      increment = -0.1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    input.value = String(Math.max(-1, Math.min(1, input.valueAsNumber + increment)));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+
+  document.getElementById("regenerate-matrix").addEventListener("click", regenerateMatrix);
+  document.getElementById("regenerate-cells").addEventListener("click", () => {
+    regenerateCells();
+    document.getElementById("simulation-status").textContent = "100 random cells regenerated. All control values retained.";
   });
 }
 
+function createGroupHeading(group, scope) {
+  const heading = document.createElement("th");
+  heading.scope = scope;
+  const marker = document.createElement("span");
+  marker.className = "matrix-group-marker";
+  marker.style.backgroundColor = matrixLabelColors[group];
+  marker.setAttribute("aria-hidden", "true");
+  heading.append(marker, `${group + 1}: ${matrixGroupNames[group]}`);
+  return heading;
+}
 
-function mousePressed() {
-  if (!brushSizeSlider || !nNewCellsSlider || !cells || !isMouseOnCanvas()) {
+function matrixSettingName(row, column) {
+  return `interaction_${row}_${column}`;
+}
+
+function applyControlSettings(settings) {
+  newCellGroupDecider = colorList.indexOf(settings.newCellColor);
+  nNewCells = settings.newCellCount;
+  brushRadius = settings.brushRadius;
+  mouseFunction = settings.mouseMode;
+  for (let row = 0; row < nGroups; row++) {
+    for (let column = 0; column < nGroups; column++) {
+      const value = settings[matrixSettingName(row, column)];
+      connectionStrengthMatrix[row][column] = value;
+      const { input, output, cell } = matrixControls[row][column];
+      output.value = value.toFixed(2);
+      input.setAttribute("aria-valuetext", value.toFixed(2));
+      cell.style.setProperty("--interaction-color", `rgb(${(1 - value) * 127.5}, ${(value + 1) * 127.5}, 0)`);
+    }
+  }
+}
+
+function regenerateMatrix() {
+  const matrix = createMatrix(nGroups);
+  for (let row = 0; row < nGroups; row++) {
+    for (let column = 0; column < nGroups; column++) {
+      matrixControls[row][column].input.value = String(matrix[row][column]);
+    }
+  }
+  // Keep the registered controls and their initial defaults; synchronize through the adapter.
+  document.getElementById("interaction-matrix").dispatchEvent(new Event("input", { bubbles: true }));
+  document.getElementById("simulation-status").textContent = "All 36 interactions randomized. Existing cells and brush settings retained.";
+}
+
+function mousePressed(event) {
+  if (!cells || event.target !== canvas.elt || !isMouseOnCanvas()) {
     return;
   }
   if (mouseFunction === "create") {
-    createCellsInCircle(mouseX, mouseY, brushSizeSlider.value());
+    createCellsInCircle(mouseX, mouseY, brushRadius);
   } else if (mouseFunction === "delete") {
-    removeCellsInCircle(mouseX, mouseY, brushSizeSlider.value());
+    removeCellsInCircle(mouseX, mouseY, brushRadius);
   }
 }
 
 function isMouseOnCanvas() {
-  return (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height);
+  return mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height;
 }
-
-
-function changeCellColor() {
-  newCellGroupDecider = colorList.indexOf(colorChooser.value());
-}
-
 
 function createCellsInCircle(x, y, r) {
-  n = nNewCellsSlider.value()
-  if (!isMouseOnCanvas()) {return}
-  for (let i = 0; i < n; i++) {
+  if (!isMouseOnCanvas()) {
+    return;
+  }
+  for (let i = 0; i < nNewCells; i++) {
     let angle = random(TWO_PI);
     let distFromPos = random(r);
     let pos = createVector(x + distFromPos * cos(angle), y + distFromPos * sin(angle));
-    
-    //newCellGroupDecider: 0 = random, 1,2,3... colors
-    if (newCellGroupDecider == 0) {
-      let colorIndex = Math.floor(random(0, nGroups))
+    if (newCellGroupDecider === 0) {
+      let colorIndex = Math.floor(random(0, nGroups));
       cells.push(new Cell(pos, colorIndex));
     } else {
-      cells.push(new Cell(pos, newCellGroupDecider-1));
+      cells.push(new Cell(pos, newCellGroupDecider - 1));
     }
   }
 }
-  
+
 function removeCellsInCircle(x, y, r) {
-  for (let i = cells.length-1; i >= 0; i--) {
+  for (let i = cells.length - 1; i >= 0; i--) {
     let d = dist(cells[i].pos.x, cells[i].pos.y, x, y);
     if (d < r) {
       cells.splice(i, 1);
     }
   }
 }
-

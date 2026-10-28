@@ -4,7 +4,7 @@ This folder contains completed, independent simulations, each in its own directo
 
 ## Adding a project
 
-Start from [_template/](./_template/), a partly empty page shell for integrating an already-built simulation. Copy it into a new project directory, bring in the supplied simulation, and follow the [template integration guide](./_template/README.md). It documents the minimal adapter, native controls, full reset versus simulation restart, sizing modes, and pre-publication checks.
+Start from [_template/](./_template/), a partly empty content starter for integrating an already-built simulation. Copy it into a new project directory, bring in the supplied simulation, and follow the [template integration guide](./_template/README.md). Standard page structure is rendered by the shared shell, not copied into every project.
 
 Example target layout (the `flow-field` example is not created):
 
@@ -21,7 +21,9 @@ projects/
 
 - Use short lowercase, ASCII, hyphenated directory names without spaces.
 - Every project has its own `index.html`, loading its required p5.js version and any other existing dependencies. No framework, build step, backend, or new dependency is required by the page template.
-- Use the shared [project stylesheet](../assets/css/style.css) and [page controller](../assets/js/project-page.js) for template-based pages; keep simulation-specific logic inside the project.
+- Load the shared [page shell](../assets/js/project-shell.js), then [page controller](../assets/js/project-page.js), then the original simulation dependencies/scripts with `defer`. Use the shared [project stylesheet](../assets/css/style.css); keep simulation-specific logic inside the project.
+- Opt in with `data-project-page`, an explicit `data-layout="sidebar"` or `"stacked"`, and the project's `data-source-url`. Supply native HTML content slots, not copies of standard buttons/sections. The [shell contract](./_template/README.md#shared-shell-contract) defines required/optional slots, ownership, initialization, and reserved IDs.
+- Change shared structure, section order, headings, and standard button placement once in the shell; change theme/layout once in shared CSS. Opted-in pages receive those changes on reload without being recopied. Project controls, complex panels, extra actions/sections, help, matrix mappings, dependencies, and simulation behavior remain local.
 - Replace every template placeholder and `PROJECT-SLUG` source URL. Controls remain disabled until a real adapter connects successfully; the template must not pretend to run a simulation.
 - Use English for all new or modified page text and documentation, with `lang="en"` on new project pages. Older pages are not translated or migrated automatically.
 - Choose fixed logical dimensions with uniform display scaling, or responsive host-based dimensions with an explicit aspect ratio and safe object resizing. Follow the template guide rather than blindly resizing every project.
@@ -32,6 +34,6 @@ projects/
 
 ## Working example and verification
 
-[Bouncing Ball](./bouncing-ball/index.html) is the first connected example; its [README](./bouncing-ball/README.md) lists the controls and expected behavior. Learning Snake and Particle Life retain their older, independent page structures.
+[Bouncing Ball](./bouncing-ball/index.html) is the compact **sidebar** reference; its [README](./bouncing-ball/README.md) lists the controls and expected behavior. [Particle Life](./particle-life/index.html) is the complex **stacked** reference; its [README](./particle-life/README.md) documents the full interaction matrix, extra actions, preserved controls, and fixed canvas sizing. Both use the same live shared shell. Learning Snake retains its older, independent page structure.
 
 There is no build or test framework. Check changed JavaScript syntax and asset paths, then serve locally and inspect the console/network, both navigation links, live updates, restart with unchanged controls, full default reset, aspect ratio and resize bounds, keyboard accessibility, and desktop/mobile overflow. Test under a non-root URL prefix to reflect GitHub Pages hosting. See the [agent guidance](../agents.md) for the full integration checklist.

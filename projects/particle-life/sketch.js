@@ -15,12 +15,16 @@ let canvas
 
 function setup() {
   canvas = createCanvas(1000, 600);
-  canvas.parent('canvas-container');
+  canvas.parent('sketch');
 
   infoTable = new InfoTable(createVector(10,10), []);
   
   initControlPanel()
-  regenerateCells()
+  ProjectPage.connect({
+    applySettings: applyControlSettings,
+    restart: regenerateCells,
+  });
+  describe("Six groups of particles interacting on a black canvas, wrapping at its edges. The overlay shows FPS and cell count.");
 }
 
 
@@ -78,7 +82,6 @@ function regenerateCells() {
     cells.push(new Cell(pos, groupNum));
   }
 }
-
 
 
 

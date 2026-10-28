@@ -1,16 +1,82 @@
 # Project-page template
 
-Copy this folder when integrating an **already-built, independent simulation**. It is a page shell, not a simulation framework. The sample controls are deliberately disabled, no p5.js dependency is loaded, and the source URL contains the explicit `PROJECT-SLUG` placeholder. Do not publish the copied page in that state.
+Copy this folder when integrating an **already-built, independent simulation**. It is a content starter for the centrally maintained [page shell](../../assets/js/project-shell.js), not a copy of the shared layout or a simulation framework. Existing opted-in pages receive shared structure/style changes on their next load; they do not need to be recopied from this folder.
+
+The sample controls are deliberately disabled, no p5.js dependency is loaded, and `data-source-url` contains the explicit `PROJECT-SLUG` placeholder. Do not publish the copied page in that state.
 
 ## Integration checklist
 
 1. Read the root [agent guidance](../../agents.md) and inspect the supplied simulation, dependencies, assets, controls, interactions, and planning notes. Preserve its behavior and dependency versions; do not migrate other projects.
-2. Copy this folder to `projects/<project-slug>/`, using a short lowercase, ASCII, hyphenated slug. Bring in the existing simulation files and assets without losing features. Keep the shared stylesheet and page controller paths in [index.html](./index.html).
-3. Replace the title, metadata, accessible canvas description, two- or three-sentence summary, sample controls, and How to Use list with accurate English text. Replace **every** `PROJECT-SLUG` occurrence with the actual directory slug. Remove the canvas placeholder and load the simulation's existing dependencies before its own scripts, in dependency order.
-4. Choose one explicit canvas sizing mode below. Keep p5.js setup, resizing, and simulation state inside the project, not the shared controller.
-5. Connect a real adapter after the simulation is ready. Leave the fieldset and both buttons disabled in HTML: the controller enables them only after initial settings and restart succeed. Never connect empty callbacks to make a page look functional.
-6. Leave Background and References empty until content is requested. Inspect original source comments and project notes for actual plans, next steps, and disclaimers; surface those in Next Steps in English with relative links to their source files (and line references where useful). Do not extract ordinary comments, commented-out code, or third-party library TODOs. Do not invent history or plans.
+2. Copy this folder to `projects/<project-slug>/`, using a short lowercase, ASCII, hyphenated slug. Bring in the existing simulation files and assets without losing features. Keep the shared stylesheet, shell, and controller paths in [index.html](./index.html). Do not copy their implementation or generated markup into the project.
+3. Replace the title, metadata, accessible canvas description, two- or three-sentence summary, sample controls, and help content with accurate English text. Replace **every** `PROJECT-SLUG` occurrence, including the root's `data-source-url`, with the actual directory slug. Remove the canvas placeholder. Load deferred scripts in this order: shared shell, shared controller, original p5.js/dependencies, then project scripts.
+4. Choose `data-layout="sidebar"` or `"stacked"` on the project root and one explicit canvas sizing mode below. Page layout and logical canvas sizing are separate decisions. Keep p5.js setup, resizing, and simulation state inside the project.
+5. Connect a real adapter after the simulation is ready. Keep the project's controls-slot fieldset disabled in source HTML; the shell and controller preserve the disabled state until initial settings and restart succeed. Do not author copies of the shared buttons. Never connect empty callbacks to make a page look functional.
+6. Omit the optional background slot until content is requested; the shell shows a visibly empty Background and References block. Inspect original source comments and project notes for actual plans, next steps, and disclaimers; supply those through the next-steps slot in English with relative source-file links (and line references where useful). Omit that slot if no notes exist. Do not extract ordinary comments, commented-out code, or third-party library TODOs. Do not invent history or plans.
 7. Verify the checks below. Update the portfolio listing, preview image, and relevant documentation **only when the task calls for adding a project**. Do not list `_template` as a portfolio project.
+
+## Shared shell contract
+
+The shell runs synchronously from its deferred script, before simulation setup. It requires exactly one `<main data-project-page>` root with:
+
+- `data-layout="sidebar"` for compact controls beside the canvas, or `"stacked"` for wide/complex controls below it. Sidebar layout also stacks on narrow screens. Both variants are maintained in shared CSS, not project-specific workspace overrides.
+- `data-source-url="https://github.com/.../tree/main/projects/<project-slug>"`: the exact absolute HTTPS source-directory URL.
+- Direct-child content slots as described below. Each slot appears at most once. Unsupported slots, missing required slots, invalid layout/source configuration, and reserved-ID collisions throw visible initialization errors instead of guessing defaults.
+
+| `data-project-slot` | Required | Project-owned content |
+| --- | --- | --- |
+| `intro` | Yes | Header containing the project's h1 and summary |
+| `canvas` | Yes | The actual `#sketch.sketch-stage` host with sizing attributes, accessible description, and no-script message |
+| `controls` | Yes | A **disabled fieldset with its own legend**, containing native controls, groups, outputs, and any project-specific action buttons |
+| `help` | Yes | Project-specific usage instructions; the shell supplies the How to Use heading |
+| `background` | No | Background/reference content, without another copy of the shared heading |
+| `next-steps` | No | Source-linked original plans and disclaimers, without another copy of the shared heading |
+| `extra` | No | One container holding any number of additional project-specific sections, including their own headings and unique IDs |
+
+Omit empty optional slots. Background and Next Steps get shared empty-content placeholders; an absent extra slot creates no block. Native HTML is intentional: do not replace complex controls or longer content with a JSON control schema.
+
+The starter's `data-project-fallback` paragraph is the only non-slot direct child. It provides a static return link and an uninitialized-interface warning if JavaScript/the shell is unavailable. The shell removes it only after successful mounting. Project content remains HTML, and the controls-slot fieldset remains disabled if mounting fails.
+
+### Ownership and global changes
+
+| Change | Edit once here |
+| --- | --- |
+| Standard sections/headings, wrappers, navigation, source-link presentation, standard button placement, or section order | [project-shell.js](../../assets/js/project-shell.js) |
+| Theme, spacing, field/button styling, sidebar/stacked layout, and mobile breakpoints | [style.css](../../assets/css/style.css) |
+| Typed settings, outputs, native reset synchronization, and restart dispatch | [project-page.js](../../assets/js/project-page.js) |
+| A project's content, native control defaults, extra actions, matrix mapping, simulation, dependencies, or logical canvas resizing | That project's files |
+
+The shell's single markup definition is the source of truth for shared structure. Add a generic notice/block or move standard buttons there, not in every project. Existing opted-in pages use the changed structure on reload; adding a new block that needs unique project information still requires authoring that information per project. Unmigrated pages and the landing page are not automatically opted in.
+
+Keep the shell as a page compositor, not a simulation framework. Preserve the standard IDs, form association, disabled-state handling, accessibility labels, and logical DOM/keyboard order when rearranging it. If a new shared block introduces an ID, reserve it centrally and document any new content slot. Use the existing extra slot for project-only additions rather than expanding the shared API for every simulation.
+
+For later global changes:
+
+1. **Add a common block:** put its markup in the shell's single `template.innerHTML` definition and any styling in shared CSS. If its content is common to all projects, no project HTML changes are needed.
+2. **Move a standard button or section:** move the existing markup in that same definition, preserving button IDs, types, reset's form association, and initial disabled state. Change actual DOM order, not just CSS visual order. Keep restart inside the control panel.
+3. **Add a common area with unique project content:** add one supported optional slot and its placeholder/default in the shell, then document it here. Only projects needing custom content supply that slot; the rest use the shared default.
+
+### Initialization and node preservation
+
+1. The browser parses the project's HTML, including native defaults and the disabled controls fieldset.
+2. The deferred shell validates the slots, creates the common structure, and **moves the original content nodes** into it. No HTML fragment is fetched; controls and the canvas host are not cloned.
+3. The controls slot becomes a child of the shell's disabled `#simulation-fields`. Only its fallback-only disabled attribute is released; nested project-disabled groups are left alone.
+4. Project setup creates its real canvas, generates any additional controls, and connects the adapter once. The existing controller applies settings, restarts, then enables the shared fieldset and standard buttons.
+
+Do not load the shell with `async`, defer mounting until after p5.js setup, rerender it during animation, or replace its nodes after connection. Project scripts can rely on the standard IDs by setup time. Missing/broken shell or adapter initialization must leave a visible warning/disabled controls and console errors, never a success-shaped fallback.
+
+The page's title/description metadata remains static in its own head. Complete generic structure requires JavaScript; there is no build step or new dependency. Keep the fallback useful rather than claiming fully rendered no-JavaScript pages.
+
+## Inventory before replacing controls
+
+Record the original behavior before writing the new markup. Keep the inventory in the affected project's README so implementation and validation use the same reference:
+
+- For every field, record its type, range, step, default, model mapping, and whether it applies live or on restart. Include dynamically generated controls, not just controls visible in the original HTML.
+- For every action, record what it recreates or randomizes and what it leaves unchanged. A population-regeneration action may ignore the brush count/color; matrix regeneration may treat its diagonal differently from initial setup.
+- Trace mouse and keyboard handlers, including focus-dependent shortcuts, boundary checks, radius-zero behavior, and whether dragging is actually implemented. Do not infer interactions from labels.
+- For a matrix, record its full dimensions, row/column direction, group-index order, diagonal rules, and whether opposite entries are independent. Verify the mapping against the simulation's force/update code, not just the old panel's colors.
+- Compare selector names, matrix markers, and rendered colors. If they disagree, preserve the numeric mapping and explain the legacy discrepancy rather than silently reordering groups or making an unrelated correction.
+
+[Particle Life's inventory](../particle-life/README.md#preserved-controls-and-actions) is a complex-control example; Bouncing Ball remains the simpler adapter reference.
 
 ## Control-to-simulation contract
 
@@ -32,7 +98,7 @@ ProjectPage.connect({
 
 The bodies above describe required work, not a ready-to-enable adapter. [Bouncing Ball](../bouncing-ball/sketch.js) is the connected example.
 
-- Keep the required IDs: `simulation-controls` (form), `simulation-fields` (fieldset), `reset-everything` (outside the form), `restart-simulation` (inside), and `simulation-status` (visible `role="status"` message). Keep the reset button's `type="reset" form="simulation-controls"` and restart's `type="button"`.
+- The shell supplies the required IDs: `simulation-controls` (form), `simulation-fields` (disabled outer fieldset), `reset-everything` (outside the form), `restart-simulation` (inside), and `simulation-status` (visible `role="status"` message). It also owns `controls-title`, `how-to-use`, `project-information`, `background`, and `next-steps`. Do not reuse these IDs or author the standard buttons/forms/headings in project slots. Keep reset's `type="reset" form="simulation-controls"` and restart's `type="button"` when changing the shared shell.
 - Give each setting an associated label, unique `id`, and `name`. Names become keys in a plain object. `range` and `number` values become finite numbers, checkboxes become booleans (including unchecked `false`), and other single-value fields remain strings. Radio groups use one name and the checked value. Use only single-value inputs, selects, and textareas; file uploads, multi-selects, and repeated names other than radio groups are not supported.
 - Keep initial values in HTML: `value`, `checked`, textarea text, or an option's `selected` attribute. Provide `<output for="field-id">` for each slider, with units in adjacent text. The controller updates outputs automatically. Number controls must always contain valid finite values; add project-specific range/validity handling if the supplied simulation needs editable number fields.
 - Connection reads the defaults, updates outputs, calls `applySettings(settings)`, then `restart(settings)`. It then enables the controls and announces readiness.
@@ -43,6 +109,28 @@ The bodies above describe required work, not a ready-to-enable adapter. [Bouncin
 
 For Bouncing Ball the settings shape is `{ color: string, count: number, diameter: number, collisions: boolean }`; appearance and collisions update live, while count applies at restart. Other projects define their own names and behavior independently.
 
+### Generated controls and random defaults
+
+- Create every named setting **after the shell mounts and before** calling `ProjectPage.connect()`. The controller captures the controls once; replacing their DOM nodes afterward leaves it reading detached controls. Randomization should update existing controls, not rebuild the panel.
+- Give each matrix entry its own setting name and accessible label identifying both affected and neighboring groups. Map those flat settings back into the simulation's matrix inside the project adapter; no shared matrix/simulation framework is needed.
+- If the original simulation starts with random settings, sample them once during initialization and establish native defaults before connection. For a generated range input, assign its value first, then capture the browser-normalized value:
+
+  ```js
+  input.value = String(initialValue);
+  input.defaultValue = input.value;
+  ```
+
+  This makes reset restore the initial control values for that page visit. Later randomization changes only `.value`, never `.defaultValue`. Document this distinction from drawing a new random configuration.
+- Keep display formatting separate from model precision. An arbitrary random fraction should not be rounded to two decimals or unintentionally quantized by `step="0.1"`. A range with `step="any"` can retain native numeric precision while project-specific keyboard handling preserves an existing 0.1 increment. Browsers may normalize floating-point serialization; do not promise bit-for-bit preservation of the original sample.
+- The controller writes slider outputs before calling `applySettings`. Project-specific formatting, such as a two-decimal matrix output, can be applied there without changing the numeric setting or dispatching another event.
+- Programmatic `.value` changes do not emit input events. After a batch randomization, dispatch one bubbling `input` event from the form or a descendant so the controller reads every updated value and applies settings once. Do not update only simulation globals: restart would reread stale controls.
+
+### Keeping large matrices usable
+
+Use a semantic table with row/column headers and native labeled controls; color alone is not a group label. Choose the shared stacked layout for a large panel. Within the controls slot, use project-owned markup/CSS for multiple button groups, sliders, fieldsets, matrices, or other controls while retaining shared tokens, field/button styles, and focus styling. Extra actions should be `type="button"` and keep their behavior/listeners local; they inherit the shared disabled fieldset until connection.
+
+On narrow screens, contain horizontal scrolling in a focusable, named matrix region, not the document. Keep affected-group row headers visible with sticky positioning. Account for those headers with scroll padding, and verify that each focused control is **fully** visible rather than partly hidden behind a sticky header or viewport edge. Native focus scrolling may leave a partially visible slider clipped; a project-local `focusin` handler using `scrollIntoView({ block: "nearest", inline: "nearest" })` can resolve this without changing shared wiring.
+
 ## Canvas sizing: choose per project
 
 The shared CSS scales the displayed canvas; it never calls p5.js or changes simulation coordinates. Set `data-sizing` on `#sketch` and declare the project's aspect ratio using `--canvas-aspect-ratio` (default `16 / 10`). Do not install a resize handler blindly.
@@ -52,7 +140,7 @@ The shared CSS scales the displayed canvas; it never calls p5.js or changes simu
 For a simulation designed around 800 by 500 logical pixels:
 
 ```html
-<div id="sketch" class="sketch-stage" data-sizing="fixed"
+<div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed"
      style="--canvas-logical-width: 800px; --canvas-aspect-ratio: 800 / 500;">
 </div>
 ```
@@ -72,5 +160,23 @@ Bouncing Ball measures host width, rounds logical dimensions to whole pixels at 
 - Check console/network errors, p5.js loading, the Back to Portfolio link, and the exact project's GitHub directory URL. The template's placeholder source URL is intentionally not a valid project destination until replaced.
 - Verify live updates during animation, restart-only settings, repeated restarts without control changes, full reset of every default and output, and a direct form reset. Test a failed/unconnected adapter: controls must remain disabled.
 - Test desktop, narrow/mobile widths, host resizing, correct aspect ratio, bounded objects, no horizontal overflow, Tab/Shift+Tab focus order, arrow-key sliders, native picker/checkbox behavior, and keyboard button activation. Confirm existing mouse and keyboard interactions still work.
+- Validate the shell on the unconnected template, sidebar Bouncing Ball, and stacked Particle Life. Check that the canvas host/control nodes survive mounting, optional placeholders and extra sections render correctly, invalid slots/configuration fail explicitly, and unavailable shell/adapter code leaves controls disabled. For shared structural changes, verify both reference pages receive the change without editing their HTML; do not rely only on a fresh copy of the starter.
+- For complex panels, test every matrix mapping and keyboard-focus position, not just the entry count or one representative slider. Use asymmetric values to detect transposed/mirrored mappings and check the actual simulation response. Test both initial and regenerated diagonal values.
+- After randomizing settings, check repeated restarts retain every value and recreate simulation state; full reset and direct `form.reset()` must restore the original defaults and outputs, not the latest randomization. Deterministic checks may pause animation, but also verify live updates while it runs and restore a normal running page afterward.
+- Check scaled canvas input at desktop and mobile sizes using the original dependency version. Test touch separately from mouse emulation when available: legacy p5.js touch fallbacks and compatibility mouse events can produce duplicate actions. Distinguish existing behavior from migration regressions; document retained limitations instead of silently upgrading dependencies or changing unrelated behavior.
 - Start How to Use with an actions/shortcuts list. Describe actual controls and explicitly say when custom shortcuts or canvas mouse controls do not exist. Do not claim keyboard canvas interaction that was never implemented.
 - Run existing applicable repository checks; there is currently no build or test runner. At minimum check changed JavaScript syntax, local assets, and the working page in a browser. Keep new or modified user-facing text and documentation in English.
+- If a command-line JavaScript runtime is unavailable, the browser's parser can syntax-check these classic scripts without installing tooling; this does not replace behavioral checks. Report tested widths, browser/emulation scope, actual results, and remaining limitations. Separate intentionally injected initialization errors from normal-load console/network errors, and stop temporary validation servers when finished.
+- Run animation/resize checks in a visible or focus-emulated browser page. Hidden embedded tabs can suspend animation frames and resize-observer delivery; distinguish a paused validation environment from a simulation regression before changing production code.
+
+### Shared-shell reference validation
+
+The shared-shell integration was checked in Chromium at 1440, 1024, 390, and 320 px under a repository URL prefix:
+
+- The unconnected template, sidebar Bouncing Ball, and stacked Particle Life render one common shell with correct assets, links, IDs, form associations, and no document overflow.
+- A temporary test version of **only the shared shell script** added a common block and relocated both standard buttons on all three pages. Original canvas hosts, controls, defaults, and pre-existing listeners survived mounting; relocated reset still worked. No project HTML was changed for this test.
+- Native nested fieldsets, multiple custom actions/control types, optional content, and multiple extra sections were exercised with a browser fixture. Typed settings, custom actions, restart/reset, and intentionally disabled nested groups were preserved.
+- Both reference simulations retained live controls, restart/reset and direct form reset, mouse interactions, fixed/responsive sizing, and simulation state/bounds. All 36 Particle Life mappings, actual force directions, and keyboard-focus positions were checked.
+- Missing scripts, failing adapter callbacks, invalid configuration/slots, and JavaScript disabled were tested separately from normal loading. Normal loads produced no console/network errors; fallback warnings and disabled controls remained in failure cases.
+
+These are browser/emulation checks, not a physical-device or cross-browser guarantee. The shared structure requires JavaScript, and each project's original dependency availability and documented legacy limitations still apply.

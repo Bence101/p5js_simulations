@@ -1,25 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore six groups of interacting particles with a full directional interaction matrix and create or delete cells using a configurable brush.">
+    <title>Particle Life | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js" defer></script>
+    <script src="./Cell.js" defer></script>
+    <script src="./UniformGridSpace.js" defer></script>
+    <script src="./InfoTable.js" defer></script>
+    <script src="./supportFunctions.js" defer></script>
+    <script src="./controlPanel.js" defer></script>
+    <script src="./sketch.js" defer></script>
   </head>
-  <h1>Particle life simulation</h1>
-  <div id="canvas-container"></div>
-  <div id="control-panel">
-    <div id="matrix-container"></div>
-    <div id="button-container"></div>
-  </div>
-
   <body>
-    <script src="sketch.js"></script>
-    <script src="Cell.js"></script>
-    <script src="UniformGridSpace.js"></script>
-    <script src="InfoTable.js"></script>
-    <script src="supportFunctions.js"></script>
-    <script src="controlPanel.js"></script>
+    <main data-project-page data-layout="stacked" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/particle-life">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Particle Life</h1>
+        <p class="project-summary">Explore six groups of particles that attract or repel one another according to a full, directional interaction matrix. Change every interaction live, randomize the rules, or create and delete cells with a configurable mouse brush.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" style="--canvas-logical-width: 1000px; --canvas-aspect-ratio: 1000 / 600;" role="img" aria-label="Six groups of interacting particles on a black 1000 by 600 canvas, with FPS and cell-count information">
+        <noscript>This simulation requires JavaScript. Enable it to run the simulation and use its controls.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Interactions and mouse brush</legend>
+        <div class="particle-controls-layout">
+          <section class="matrix-controls" aria-labelledby="matrix-title">
+            <h3 id="matrix-title">Interaction matrix</h3>
+            <p id="matrix-hint" class="control-hint">Rows are the affected cells; columns are their neighbors. Every entry is independent, including the diagonal. Values run from -1 (repulsion) to +1 (attraction); very close cells still repel.</p>
+            <p id="matrix-keyboard-hint" class="control-hint">Focus an entry and use +, -, or arrow keys to change it by 0.1. On narrow screens, scroll this table sideways to reach all six columns.</p>
+            <div class="matrix-scroll" role="region" aria-labelledby="matrix-title" tabindex="0">
+              <table id="interaction-matrix" class="interaction-matrix" aria-describedby="matrix-hint matrix-keyboard-hint group-color-hint">
+                <caption>All 36 directed interactions: row affected by column</caption>
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <p id="group-color-hint" class="control-hint">Group numbers preserve the original order. Legacy names and colors are retained: group 5 is called Purple but its particles are cyan; group 6 is called Orange but its particles are magenta. Their original matrix markers are magenta and cyan, respectively.</p>
+            <button id="regenerate-matrix" type="button">Regenerate Matrix</button>
+          </section>
+          <section aria-labelledby="brush-title">
+            <h3 id="brush-title">Mouse brush and cells</h3>
+            <div class="simulation-controls__grid">
+              <label class="simulation-control" for="new-cell-color">
+                New-cell color
+                <select id="new-cell-color" name="newCellColor" aria-describedby="new-cell-color-hint">
+                  <option value="random" selected>Random</option>
+                  <option value="red">1: Red</option>
+                  <option value="green">2: Green</option>
+                  <option value="blue">3: Blue</option>
+                  <option value="yellow">4: Yellow</option>
+                  <option value="purple">5: Purple (cyan particles)</option>
+                  <option value="orange">6: Orange (magenta particles)</option>
+                </select>
+              </label>
+              <p id="new-cell-color-hint" class="control-hint">Affects only cells created by the mouse. Random chooses a group independently for each new cell.</p>
+              <label class="simulation-control" for="new-cell-count">
+                Cells per mouse press
+                <span class="simulation-control__value"><output for="new-cell-count">10</output></span>
+                <input id="new-cell-count" name="newCellCount" type="range" min="1" max="30" step="1" value="10">
+              </label>
+              <label class="simulation-control" for="brush-radius">
+                Brush radius
+                <span class="simulation-control__value"><output for="brush-radius">50</output> logical px</span>
+                <input id="brush-radius" name="brushRadius" type="range" min="0" max="100" step="1" value="50">
+              </label>
+              <fieldset>
+                <legend>Mouse mode</legend>
+                <label class="simulation-control simulation-control--checkbox" for="mouse-create">
+                  <input id="mouse-create" name="mouseMode" type="radio" value="create" checked>
+                  Create cells
+                </label>
+                <label class="simulation-control simulation-control--checkbox" for="mouse-delete">
+                  <input id="mouse-delete" name="mouseMode" type="radio" value="delete">
+                  Delete cells
+                </label>
+              </fieldset>
+              <button id="regenerate-cells" type="button">Regenerate All Cells</button>
+              <p class="control-hint">Replaces the current population with 100 random cells, without changing any settings.</p>
+            </div>
+          </section>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Actions and shortcuts:</strong> press inside the canvas to create or delete cells. Focus a matrix slider and press + or - to adjust it by 0.1; its arrow keys also adjust by 0.1. There are no other custom simulation shortcuts and no keyboard equivalent for canvas creation or deletion.</li>
+          <li><strong>Interaction matrix:</strong> all six rows and six columns are editable, including same-group interactions on the diagonal. Row A, column B controls how cells in group A respond to nearby cells in group B; the reverse entry is separate. Positive values attract, negative values repel, and zero removes this attraction/repulsion component. The existing short-range repulsion remains even at zero or positive values. Changes apply immediately without replacing particles.</li>
+          <li><strong>Matrix values and colors:</strong> values range from -1 to +1 and display two decimal places; the simulation uses the slider's numeric precision, not the rounded display. The red-to-green marker indicates the value, not the particle group. Numbered row/column headers identify groups without relying on color. Groups 5 and 6 retain the legacy name/color differences explained below the table.</li>
+          <li><strong>Regenerate Matrix:</strong> immediately randomizes every entry, including the diagonal, while retaining all particles and brush settings. Initially only the off-diagonal entries are random; the diagonal starts at +1.</li>
+          <li><strong>New-cell color:</strong> selects one of the six groups for subsequent mouse-created cells. Random selects a group for each cell. It does not recolor existing cells or affect regenerated populations.</li>
+          <li><strong>Cells per mouse press (1&ndash;30):</strong> immediately sets the number of cells added by each creation press; the default is 10. It does not limit the total population or affect deletion.</li>
+          <li><strong>Brush radius (0&ndash;100 logical px):</strong> immediately sets the creation/deletion circle, default 50. It scales visually with the fixed canvas. A zero radius creates cells at the press position and deletes none.</li>
+          <li><strong>Mouse mode:</strong> Create cells (the default) adds cells at random positions within the brush radius. Delete cells removes all cells strictly inside that radius, regardless of color or the cells-per-press setting. Presses must be strictly inside the canvas; continuous drag painting is not implemented.</li>
+          <li><strong>Canvas touch limitation:</strong> the preserved p5.js 1.4.0 touch handling can deliver both a touch fallback and a compatibility mouse event for one tap, creating cells twice. Use a mouse for predictable cells-per-press behavior. The native HTML controls, including matrix sliders, support touch independently of this legacy canvas behavior.</li>
+          <li><strong>Regenerate All Cells:</strong> replaces the population with 100 randomly positioned cells in random groups, retaining the entire matrix and every brush control. It does not use the brush count or selected color.</li>
+          <li><strong>Restart Simulation:</strong> also starts a fresh population of 100 random cells, retaining every current control value, including all 36 matrix entries. Changes to the matrix and brush settings are live; no setting requires a restart.</li>
+          <li><strong>Reset Everything:</strong> restores Random color, 10 cells per press, a 50 px radius, Create mode, and the initial matrix for this page visit (diagonal +1 and the original random off-diagonal values), then restarts with 100 random cells. It does not reload the page.</li>
+          <li><strong>Canvas and information:</strong> the logical canvas stays 1000&times;600 and scales down uniformly on smaller screens without changing the physics. Cells wrap at its edges. The overlay displays FPS and the current number of cells.</li>
+          <li><strong>Native keyboard controls:</strong> use Tab/Shift+Tab to move through controls, arrow keys for sliders and radio options, and Enter/Space for buttons. The select uses your browser's native keyboard controls. The matrix's scroll region is focusable; scroll it horizontally to access all columns on narrow screens.</li>
+        </ul>
+      </div>
+      <div data-project-slot="next-steps">
+        <ul>
+          <li>Organize the cell-regeneration code, as noted in <a href="./sketch.js">the simulation source</a>.</li>
+          <li>Make border handling independent of the global canvas dimensions, as planned in <a href="./supportFunctions.js">the support functions</a>.</li>
+          <li><strong>Existing disclaimer:</strong> the commented-out KD-tree experiment is described as not really suitable for this purpose and untested in <a href="./UniformGridSpace.js">the spatial-index source</a>. It is not the active simulation index.</li>
+        </ul>
+      </div>
+    </main>
   </body>
-  
 </html>

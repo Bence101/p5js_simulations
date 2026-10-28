@@ -16,6 +16,13 @@ window.ProjectPage = (() => {
     const reset = document.getElementById("reset-everything");
     const restart = document.getElementById("restart-simulation");
     const status = document.getElementById("simulation-status");
+    if (!(form instanceof HTMLFormElement) || !(fields instanceof HTMLFieldSetElement)
+      || !(reset instanceof HTMLButtonElement) || !(restart instanceof HTMLButtonElement) || !status) {
+      throw new Error("Project page markup is not ready. Load project-shell.js before the simulation setup.");
+    }
+    if (fields.form !== form || reset.form !== form || reset.type !== "reset" || restart.type !== "button") {
+      throw new Error("Project page controls must preserve the shared form and reset/restart button contract.");
+    }
     const controls = [...form.querySelectorAll("input[name], select[name], textarea[name]")];
     let settings;
 
