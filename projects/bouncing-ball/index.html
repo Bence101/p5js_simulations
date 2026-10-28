@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hu">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,9 +13,37 @@
     <main>
       <a href="../../index.html">&larr; Portfolio</a>
       <h1>Bouncing Ball</h1>
-      <div id="sketch" class="sketch-stage" role="img" aria-label="Pattogo labda animacio">
-        <noscript>A demo futtatasahoz JavaScript szukseges.</noscript>
+      <section class="simulation-controls" aria-label="Simulation controls">
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="ball-color">
+            Ball color
+            <input id="ball-color" type="color" value="#e8664a">
+          </label>
+          <label class="simulation-control" for="ball-count">
+            Number of balls
+            <span class="simulation-control__value"><output id="ball-count-value" for="ball-count">1</output></span>
+            <input id="ball-count" type="range" min="1" max="10" step="1" value="1">
+          </label>
+          <label class="simulation-control" for="ball-diameter">
+            Ball diameter
+            <span class="simulation-control__value"><output id="ball-diameter-value" for="ball-diameter">36</output> px</span>
+            <input id="ball-diameter" type="range" min="12" max="72" step="1" value="36">
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="collisions">
+            <input id="collisions" type="checkbox">
+            Ball collisions
+          </label>
+          <button id="restart-simulation" class="simulation-controls__restart" type="button">Restart Simulation</button>
+        </div>
+      </section>
+      <div id="sketch" class="sketch-stage" role="img" aria-label="Bouncing balls in a canvas">
+        <noscript>This demo requires JavaScript to run.</noscript>
       </div>
+      <section class="simulation-help" aria-labelledby="how-to-use">
+        <h2 id="how-to-use">How to Use</h2>
+        <p>Choose a color or diameter to update all current balls immediately. Set the number of balls, then select <strong>Restart Simulation</strong> to replace the current set with that many balls; the selected controls are retained. Turn on <strong>Ball collisions</strong> to make balls bounce off one another. Balls always bounce off the canvas edges.</p>
+        <p>Click an empty spot in the canvas to add a ball, up to 10 total. Click a ball to remove it. If balls overlap, the topmost one is removed.</p>
+      </section>
     </main>
   </body>
 </html>

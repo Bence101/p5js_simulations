@@ -51,3 +51,71 @@ a:focus-visible {
 .sketch-stage canvas {
   display: block;
 }
+
+.simulation-controls {
+  margin-block: 1.5rem;
+}
+
+.simulation-controls__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  align-items: end;
+  gap: 1rem;
+}
+
+.simulation-control {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.simulation-control input[type="color"] {
+  width: 3rem;
+  height: 2.5rem;
+  padding: 0.2rem;
+}
+
+.simulation-control input[type="range"] {
+  width: 100%;
+}
+
+.simulation-control__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.simulation-control--checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.simulation-controls__restart {
+  justify-self: start;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: #14664e;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.simulation-controls__restart:hover {
+  background: #0a4634;
+}
+
+.simulation-controls__restart:focus-visible,
+.simulation-control input:focus-visible {
+  outline: 2px solid #14664e;
+  outline-offset: 3px;
+}
+
+.simulation-help {
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.simulation-help h2 {
+  font-size: 1.35rem;
+}
