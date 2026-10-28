@@ -1,66 +1,156 @@
+:root {
+  color-scheme: dark;
+  --background: #141715;
+  --surface: #1d211e;
+  --surface-raised: #272d28;
+  --text: #f0f1e9;
+  --muted: #a4afa5;
+  --accent: #c4ee96;
+  --border: #343c34;
+  --radius: 18px;
+  --page-width: 1200px;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background: #f4f6f5;
-  color: #202b28;
-  font-family: "Trebuchet MS", sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
 }
 
 main {
-  width: min(100% - 2rem, 960px);
-  margin: 3rem auto;
+  width: min(calc(100% - 2rem), var(--page-width));
+  margin: 2rem auto 4rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
 }
 
 h1 {
-  font-size: 2rem;
-  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  font-size: 1.1rem;
 }
 
 a {
-  color: #14664e;
+  color: var(--accent);
   text-underline-offset: 0.25em;
+  overflow-wrap: anywhere;
 }
 
 a:hover {
-  color: #0a4634;
+  color: var(--text);
 }
 
-a:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 5px;
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .project-link {
   display: inline-flex;
-  gap: 1rem;
+  min-height: 44px;
   align-items: center;
-  padding-block: 0.75rem;
-  font-size: 1.125rem;
+}
+
+.project-summary {
+  max-width: 70ch;
+  margin-top: 0;
+  color: var(--muted);
+}
+
+.project-actions {
+  margin-block: 1.5rem;
+}
+
+.project-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17rem;
+  align-items: start;
+  gap: 1.5rem;
+}
+
+.project-workspace > * {
+  min-width: 0;
 }
 
 .sketch-stage {
+  --canvas-aspect-ratio: 16 / 10;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: var(--canvas-aspect-ratio);
   overflow: hidden;
+  border-radius: var(--radius);
   background: #e4ece8;
+  color: #202b28;
 }
 
+.sketch-stage[data-sizing="fixed"] {
+  max-width: var(--canvas-logical-width);
+}
+
+/* Override p5's inline display dimensions, not its logical drawing dimensions. */
 .sketch-stage canvas {
   display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.sketch-stage[data-sizing="responsive"] canvas {
+  aspect-ratio: var(--canvas-aspect-ratio);
+}
+
+.sketch-placeholder {
+  margin: 0;
+  padding: 1.5rem;
 }
 
 .simulation-controls {
-  margin-block: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.simulation-controls h2 {
+  margin-top: 0;
+}
+
+.simulation-controls fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.simulation-controls legend {
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .simulation-controls__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-  align-items: end;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .simulation-control {
@@ -69,53 +159,129 @@ a:focus-visible {
   font-weight: 600;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+input:not([type="range"], [type="checkbox"], [type="radio"]),
+select,
+textarea {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+button {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover:enabled {
+  border-color: var(--accent);
+}
+
+.button--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--background);
+}
+
+.button--primary:hover:enabled {
+  background: var(--text);
+}
+
+button:disabled,
+fieldset:disabled {
+  opacity: 0.6;
+}
+
+button:disabled,
+fieldset:disabled input {
+  cursor: not-allowed;
+}
+
 .simulation-control input[type="color"] {
-  width: 3rem;
-  height: 2.5rem;
-  padding: 0.2rem;
+  width: 100%;
+  padding: 0.25rem;
 }
 
 .simulation-control input[type="range"] {
   width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.simulation-control input[type="checkbox"],
+.simulation-control input[type="radio"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
 }
 
 .simulation-control__value {
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
   font-weight: 400;
 }
 
 .simulation-control--checkbox {
   display: flex;
+  min-height: 44px;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-.simulation-controls__restart {
-  justify-self: start;
-  padding: 0.65rem 1rem;
-  border: 0;
-  border-radius: 0.25rem;
-  background: #14664e;
-  color: #fff;
-  font: inherit;
-  cursor: pointer;
+.control-hint,
+.simulation-status {
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
-.simulation-controls__restart:hover {
-  background: #0a4634;
+.control-hint {
+  margin: 0;
 }
 
-.simulation-controls__restart:focus-visible,
-.simulation-control input:focus-visible {
-  outline: 2px solid #14664e;
-  outline-offset: 3px;
+.simulation-status {
+  margin-bottom: 0;
 }
 
-.simulation-help {
-  margin-top: 1.5rem;
-  line-height: 1.6;
+.simulation-help,
+.project-information,
+.project-source {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
 }
 
-.simulation-help h2 {
-  font-size: 1.35rem;
+.simulation-help li + li {
+  margin-top: 0.5rem;
+}
+
+.project-information section + section {
+  margin-top: 2rem;
+}
+
+.empty-content {
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .project-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

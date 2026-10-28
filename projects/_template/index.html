@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An unconnected project-page template for integrating an existing p5.js simulation.">
+    <title>Project Title (Template) | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="../../assets/js/project-page.js" defer></script>
+    <!-- TODO: Load the supplied simulation's existing p5.js version and dependencies here. -->
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <a class="project-link" href="../../index.html">&larr; Back to Portfolio</a>
+      <header>
+        <h1>Project Title (Template)</h1>
+        <p class="project-summary">This is an integration template for an existing p5.js simulation. Replace this summary with two or three accurate sentences about the project before publishing.</p>
+      </header>
+      <div class="project-actions">
+        <button id="reset-everything" class="button--primary" type="reset" form="simulation-controls" disabled>Reset Everything</button>
+      </div>
+      <div class="project-workspace">
+        <!-- TODO: Choose responsive or fixed sizing; see README.md before connecting a sketch. -->
+        <div id="sketch" class="sketch-stage" data-sizing="responsive" role="img" aria-label="Simulation placeholder; no simulation is connected">
+          <p class="sketch-placeholder">Simulation not connected. See the template README to integrate an existing project.</p>
+          <noscript>JavaScript is required to run an integrated simulation. This template has no simulation connected.</noscript>
+        </div>
+        <form id="simulation-controls" class="simulation-controls" aria-labelledby="controls-title">
+          <h2 id="controls-title">Controls</h2>
+          <fieldset id="simulation-fields" disabled>
+            <legend>Example settings</legend>
+            <div class="simulation-controls__grid">
+              <label class="simulation-control" for="example-color">
+                Example color
+                <input id="example-color" name="color" type="color" value="#e8664a">
+              </label>
+              <label class="simulation-control" for="example-size">
+                Example size
+                <span class="simulation-control__value"><output for="example-size">36</output> px</span>
+                <input id="example-size" name="size" type="range" min="12" max="72" step="1" value="36">
+              </label>
+              <label class="simulation-control simulation-control--checkbox" for="example-option">
+                <input id="example-option" name="option" type="checkbox">
+                Example option
+              </label>
+              <button id="restart-simulation" type="button" disabled>Restart Simulation</button>
+            </div>
+          </fieldset>
+          <p id="simulation-status" class="simulation-status" role="status">No simulation adapter is connected. All simulation controls are disabled.</p>
+        </form>
+      </div>
+      <section class="simulation-help" aria-labelledby="how-to-use">
+        <h2 id="how-to-use">How to Use</h2>
+        <ul>
+          <li><strong>Example color, size, and option:</strong> unconnected sample fields, not simulation features. Replace them with the supplied project's actual controls.</li>
+          <li><strong>Restart Simulation:</strong> once connected, restarts the simulation using the current settings without changing any control values.</li>
+          <li><strong>Reset Everything:</strong> once connected, restores all HTML control defaults and restarts the simulation with them.</li>
+          <li><strong>Keyboard:</strong> the connected native controls support Tab navigation, arrow keys for sliders, Space for checkboxes, and Enter or Space for buttons.</li>
+          <li><strong>Custom shortcuts and canvas mouse controls:</strong> none in this unconnected template. Document only the interactions the supplied simulation actually supports.</li>
+        </ul>
+        <p>Controls remain disabled until a real adapter successfully applies the initial settings and starts the simulation. Replace this help section when integrating a project.</p>
+      </section>
+      <section class="project-information" aria-labelledby="project-information">
+        <h2 id="project-information">Project Information</h2>
+        <section aria-labelledby="background">
+          <h3 id="background">Background and References</h3>
+          <div class="empty-content">Content intentionally left empty for a future update.</div>
+        </section>
+        <section aria-labelledby="next-steps">
+          <h3 id="next-steps">Next Steps</h3>
+          <!-- TODO: Extract only existing plans, next steps, and disclaimers; link each to its source file. -->
+          <div class="empty-content">Content intentionally left empty for a future update.</div>
+        </section>
+      </section>
+      <footer class="project-source">
+        <!-- TODO: Replace PROJECT-SLUG and remove this placeholder notice before publishing. -->
+        <a href="https://github.com/Bence101/p5js_simulations/tree/main/projects/PROJECT-SLUG">View Project Source on GitHub (replace PROJECT-SLUG before publishing)</a>
+      </footer>
+    </main>
+  </body>
+</html>

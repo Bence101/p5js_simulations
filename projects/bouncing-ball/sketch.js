@@ -7,45 +7,33 @@ let balls = [];
 let ballColor;
 let ballDiameter;
 let collisionEnabled;
-let ballColorInput;
-let ballCountInput;
-let ballCountValue;
-let ballDiameterInput;
-let ballDiameterValue;
-let collisionsInput;
 
 function setup() {
   const stage = document.getElementById("sketch");
-  const canvas = createCanvas(stage.clientWidth, stage.clientHeight);
+  const canvasWidth = Math.max(1, Math.floor(stage.getBoundingClientRect().width));
+  const canvas = createCanvas(canvasWidth, Math.max(1, Math.round(canvasWidth * 10 / 16)));
   canvas.parent(stage);
   noStroke();
 
-  ballColorInput = document.getElementById("ball-color");
-  ballCountInput = document.getElementById("ball-count");
-  ballCountValue = document.getElementById("ball-count-value");
-  ballDiameterInput = document.getElementById("ball-diameter");
-  ballDiameterValue = document.getElementById("ball-diameter-value");
-  collisionsInput = document.getElementById("collisions");
+  ProjectPage.connect({
+    applySettings(settings) {
+      ballColor = settings.color;
+      ballDiameter = settings.diameter;
+      collisionEnabled = settings.collisions;
+      keepBallsInBounds();
+    },
+    restart: restartSimulation,
+  });
 
-  ballColor = ballColorInput.value;
-  ballDiameter = Number(ballDiameterInput.value);
-  collisionEnabled = collisionsInput.checked;
-  updateControlValues();
-  ballColorInput.addEventListener("input", () => {
-    ballColor = ballColorInput.value;
+  const observer = new ResizeObserver(([entry]) => {
+    const nextWidth = Math.max(1, Math.floor(entry.contentRect.width));
+    const nextHeight = Math.max(1, Math.round(nextWidth * 10 / 16));
+    if (width !== nextWidth || height !== nextHeight) {
+      resizeCanvas(nextWidth, nextHeight);
+      keepBallsInBounds();
+    }
   });
-  ballCountInput.addEventListener("input", updateControlValues);
-  ballDiameterInput.addEventListener("input", () => {
-    ballDiameter = Number(ballDiameterInput.value);
-    updateControlValues();
-    keepBallsInBounds();
-  });
-  collisionsInput.addEventListener("change", () => {
-    collisionEnabled = collisionsInput.checked;
-  });
-  document.getElementById("restart-simulation").addEventListener("click", restartSimulation);
-
-  restartSimulation();
+  observer.observe(stage);
   describe("Balls bouncing off the edges of a pale green canvas.");
 }
 
@@ -96,19 +84,8 @@ function mousePressed() {
   }
 }
 
-function windowResized() {
-  const stage = document.getElementById("sketch");
-  resizeCanvas(stage.clientWidth, stage.clientHeight);
-  keepBallsInBounds();
-}
-
-function updateControlValues() {
-  ballCountValue.value = ballCountInput.value;
-  ballDiameterValue.value = ballDiameterInput.value;
-}
-
-function restartSimulation() {
-  const count = constrain(Number(ballCountInput.value), 1, maximumBalls);
+function restartSimulation(settings) {
+  const count = constrain(settings.count, 1, maximumBalls);
   const radius = getBallRadius();
   balls = [];
 
