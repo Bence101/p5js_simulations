@@ -86,8 +86,8 @@
     </section>
     <section class="project-information" aria-labelledby="project-information">
       <h2 id="project-information">Project Information</h2>
-      <section aria-labelledby="background">
-        <h3 id="background">Background and References</h3>
+      <section aria-labelledby="project-background">
+        <h3 id="project-background">Background and References</h3>
         <div data-shell-slot="background">
           <div class="empty-content">Content intentionally left empty for a future update.</div>
         </div>

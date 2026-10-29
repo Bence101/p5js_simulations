@@ -93,7 +93,7 @@ class Car {
   }
 
   control() {
-    // ezt kell kicserélni, hogy az 'agynak' megfelelően irányítson
+    if (!drivingFocusActive()) {return}
     if (keyIsDown(LEFT_ARROW)) {
       this.directSteering(-1);
     }

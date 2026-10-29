@@ -1,25 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watch neural-network cars evolve on a PNG track through fitness-weighted selection and mutation. Tune learning settings or add focus-scoped manual driving inputs alongside the AI.">
+    <title>Self-Driving Car | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./libraries/matrix.js" defer></script>
+    <script src="./libraries/nn.js" defer></script>
+    <script src="./init.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./brain.js" defer></script>
+    <script src="./colliders.js" defer></script>
+    <script src="./track.js" defer></script>
+    <script src="./car.js" defer></script>
+    <script src="./population.js" defer></script>
+    <script src="./main.js" defer></script>
   </head>
   <body>
-    <script src="utils.js"></script>
-    <script src="init.js"></script>
-    <script src="main.js"></script>
-    <script src="car.js"></script>
-    <script src="population.js"></script>
-    <script src="checkpointList.js"></script>
-    <script src="track.js"></script>
-    <script src="colliders.js"></script>
-    <script src="brain.js"></script>
-    <script src="libraries/matrix.js"></script>
-    <script src="libraries/nn.js"></script>
-    <script src="trackBuilder.js"></script>
-
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/self-driving-car">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Self-Driving Car</h1>
+        <p class="project-summary">Neural-network cars evolve through fitness-weighted selection and mutation while following ordered checkpoints on a bundled PNG track. The best car's brain survives unchanged into the next generation; manual driving inputs can influence the cars alongside the AI.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="group" tabindex="0" aria-label="Self-driving car simulation; focus here for driving keys" aria-describedby="driving-instructions">
+        <noscript>JavaScript is required to load the track, animate the cars, and enable simulation controls. No simulation runs without it.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Evolution settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="simulation-speed">
+            Simulation speed
+            <span class="simulation-control__value"><output for="simulation-speed"></output> updates / rendered frame</span>
+            <input id="simulation-speed" name="simSpeed" type="range" min="1" max="10" step="1" aria-describedby="speed-hint">
+          </label>
+          <p class="control-hint" id="speed-hint">Applies live. More updates per frame, not guaranteed wall-clock acceleration.</p>
+          <label class="simulation-control" for="mutation-amplitude">
+            Mutation amplitude
+            <span class="simulation-control__value"><output for="mutation-amplitude"></output></span>
+            <input id="mutation-amplitude" name="mutationRate" type="range" min="0" max="1" step="0.01" aria-describedby="mutation-hint">
+          </label>
+          <p class="control-hint" id="mutation-hint">Uniform weight and bias perturbation for subsequent offspring, not a per-weight probability. Existing brains and the elite are unchanged.</p>
+          <label class="simulation-control" for="population-size">
+            Population size
+            <input id="population-size" name="popSize" type="number" min="1" max="100" step="1" required aria-describedby="population-hint population-error">
+          </label>
+          <p class="control-hint" id="population-hint">Applies only on restart or reset, not at the next generation. The original implementation is expensive, particularly above 10 cars.</p>
+          <p id="population-error" class="population-error" role="alert" hidden></p>
+          <label class="simulation-control simulation-control--checkbox" for="ancestor-labels">
+            <input id="ancestor-labels" name="showParentText" type="checkbox">
+            Show ancestor labels
+          </label>
+          <p class="control-hint">Applies live. Initial cars have no parent label; offspring show a parent index and the elite shows its best-car label.</p>
+        </div>
+        <dl class="driving-stats" aria-label="Learning progress">
+          <dt>Generation</dt><dd id="generation">0</dd>
+          <dt>Generation age</dt><dd><span id="generation-age">0</span> updates</dd>
+        </dl>
+        <p class="control-hint" id="run-state">Waiting for initialization.</p>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Open the page over HTTP:</strong> use VS Code Live Server or another local HTTP server, then copy its <code>http://</code> address into Edge or your preferred browser. Double-clicking the HTML file opens a <code>file://</code> address, where browser security blocks the required image loading.</li>
+          <li id="driving-instructions"><strong>Driving keys:</strong> Tab to the simulation or click/tap its canvas to focus it. Left/right arrows add steering, up/down arrows add acceleration/deceleration, and Space assigns zero speed. These inputs affect applicable cars, not a selected player car. The AI executes afterward in the same update, so Space is not a reliable pause and manual input never disables AI.</li>
+          <li><strong>Canvas pointer actions:</strong> clicking or tapping only focuses the simulation. There are no canvas editing or mouse-based simulation actions; dragging does not modify the track or add objects.</li>
+          <li><strong>Native controls:</strong> Tab/Shift+Tab moves focus, arrow keys operate sliders and the number input, Space toggles the checkbox, and Enter/Space activates buttons. Driving keys do not steer while these controls have focus.</li>
+          <li><strong>Restart Simulation:</strong> discards learned state and starts a fresh population with current settings, including the pending population size. All control values stay unchanged; a stopped run resumes.</li>
+          <li><strong>Reset Everything:</strong> restores code-provided defaults and restarts learning. A direct native form reset has the same behavior.</li>
+        </ul>
+        <p>Evolution continues automatically while the run is active. Speed ranges from 1 to 10 updates per rendered frame in steps of 1 (default 1). Mutation amplitude ranges from 0 to 1 in steps of 0.01 (default 0.2) and adds a uniform random shift between the negative and positive amplitude to each offspring weight and bias. A zero amplitude still permits fitness-weighted selection, but adds no perturbation. Population size is a whole number from 1 to 100 (default 10); ancestor labels are enabled by default.</p>
+        <p>Generation numbering starts at 0. A generation ends when no unfinished car is alive or after 3000 updates. The run stops at generation 1000; use Restart Simulation to learn again. Fitness favors checkpoint progress and average speed. There is no crossover or NEAT, and no guaranteed number of generations to learn a successful route.</p>
+        <p>The retained call <code>new NeuralNetwork(6, 4, 3, 4)</code> is interpreted by this project's three-argument library as 6 inputs, 4 hidden nodes, and <strong>3 outputs</strong>. The fourth argument is ignored: the AI can select left, right, or acceleration; the fourth deceleration branch is unreachable. This original behavior has not been redesigned.</p>
+        <p>The logical canvas remains fixed at 800 by 600; only its display scales down. Pixel-based sensing and collision checks are computationally expensive, especially above 10 cars. Background tabs may suspend animation. Generation skipping remains a source-only setting at 0 because its loop can block a frame.</p>
+        <p><strong>Track workflow:</strong> the independent <a href="../image-creator/index.html">Image Creator</a> can export a bitmap. This page consumes only its bundled PNG; the start position, heading, and ordered checkpoints are configured separately in <a href="./init.js">init.js</a>. There is no live authoring connection, runtime map editor, or import feature. See the <a href="./README.md">project README</a> for the full inventory and retained limitations.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>These are translated original plans and disclaimers, not features implemented by this integration:</p>
+        <ul>
+          <li>The <a href="./__todo.txt">original task list, lines 2-6</a>, proposes code organization/cleanup, a smaller purpose-built neural-network class, network visualization, progress/finish-rate charts, and moving globals into a settings class or JSON. The <a href="./brain.js">Brain placeholder, line 3</a>, also anticipates visualization; <a href="./utils.js">utility comments, lines 4 and 28</a>, question parallel-segment handling and mutation configuration placement. These remain unimplemented.</li>
+          <li>The <a href="./__todo.txt">UI plan, line 7</a>, is partially fulfilled by the four native settings here. Other constants remain source-configured; this does not add charts, network views, or a skip-generations action.</li>
+          <li>The <a href="./__todo.txt">collision and steering plans, lines 8-9</a>, propose line-based collision geometry to reduce pixel-sampling cost and wheel-based rather than center-based rotation. Neither is implemented: the PNG collision track and existing driving physics are deliberately preserved.</li>
+          <li>The <a href="./trackBuilder.js">Track Builder prototype</a> retains two boundary-node lists and paired checkpoints, JSON export, and an incomplete import method (lines 106-117). Its geometry is not connected to the active PNG collision track. The source is retained unchanged but deliberately not loaded or exposed here; this is not a completed geometric-track implementation or a decision to abandon the idea.</li>
+        </ul>
+        <p>The <a href="./__readme.txt">original notes</a> describe fitness-weighted selection, mutation, and unchanged best-brain inheritance, with an informal learning-time observation rather than a guarantee. Source-only skip/performance warnings remain in <a href="./init.js">init.js</a>. Restart handling is now implemented; the other historical plans are not authorization for unrelated algorithm or physics changes.</p>
+      </div>
+    </main>
   </body>
 </html>

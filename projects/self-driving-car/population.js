@@ -85,7 +85,7 @@ class Population {
       let agent = this.agents[i];
       agent.calculateFitness();
       finisherCount+=agent.finished;
-      if (this.maxFitness<agent.fitness) {
+      if (!this.bestNN || this.maxFitness<agent.fitness) {
         this.maxFitness=agent.fitness
         this.maxScore=agent.score;
         this.bestNum = i

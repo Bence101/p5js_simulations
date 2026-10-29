@@ -1,17 +1,24 @@
+const defaults = Object.freeze({
+  simSpeed: 1,
+  mutationRate: 0.2,
+  popSize: 10,
+  showParentText: true,
+});
+
 // fitness
 let slownessPenalty = 0.5;
 let fastnessReward = 2
 
 
 // genetic settings
-let mutationRate = 0.2; // with 0.2 value a finisher car will emerge in 10-20 gen, after that it will speed up
-let popSize = 10; // 10-nél több sajnos jelenleg nagyon lassú
+let mutationRate = defaults.mutationRate;
+let popSize = defaults.popSize; // More than 10 cars is computationally expensive.
 
 
 // sim settings
 let SKIPNGEN = 0; // You can skip even 100 gen, but it could take a while. Try skip only 10-20 gen as it only takes 2-5 min. Warning, if the browser window is not in the foreground, the calculation will stop!
-let simSpeed = 1; // speeds up simulation (unfortunately the simulation currently too calculatin heavy to take effect), use skipgen instead as that skips the drawing step
-let showParentText = 1; // show ancestor on car
+let simSpeed = defaults.simSpeed;
+let showParentText = defaults.showParentText;
 
 
 // you should not change values below this row studying the codes
@@ -59,19 +66,6 @@ let checkpointList = [
 // global variables
 let population;
 let carPicture;
-let testText;
 let track;
 let trackPicture;
 let START_POINT;
-let trackBuilder;
-
-
-// user inputs
-// window.doubleClicked = (e) => trackBuilder.doubleClicked();
-window.mousePressed = (e) => trackBuilder.mousePressed();
-
-window.keyPressed = (e) => (trackBuilder.keyPressed())
-
-
-
-

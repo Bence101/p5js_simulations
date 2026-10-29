@@ -1,7 +1,19 @@
-html, body {
-  margin: 0;
-  padding: 0;
+.driving-stats {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1rem;
+  font-variant-numeric: tabular-nums;
 }
-canvas {
-  display: block;
+
+.driving-stats dd {
+  margin: 0;
+}
+
+.population-error {
+  color: #ffb4a8;
+}
+
+#sketch:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
 }
