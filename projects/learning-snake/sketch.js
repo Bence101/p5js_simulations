@@ -27,7 +27,8 @@ let nn2
 let newChild
 
 function setup() {
-  createCanvas(700, 700).parent('sketch');
+  const canvas = createCanvas(700, 700);
+  canvas.parent('sketch');
   for (let i=0; i<nSnakesToVis;i++) {
     let visRows = floor(math.sqrt(nSnakesToVis))
     let xShift = math.floor(i / visRows)
@@ -49,6 +50,7 @@ function setup() {
 //   print('child', newChild.weightTables[1]._data)
 
   ProjectPage.connect({
+    canvas,
     applySettings(settings) {
       stepRate = settings.stepRate
     },
@@ -135,5 +137,4 @@ function keyPressed(event) {
     population.update()
   }
 }
-
 

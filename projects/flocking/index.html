@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An interactive boid flocking simulation with live steering controls, a follow point, obstacles, and chaser boids.">
+    <title>Flocking | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/flocking">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Flocking</h1>
+        <p class="project-summary">Fifty boids move across a blue canvas, steering through separation, alignment, cohesion, and attraction to a follow point. Adjust their behavior live, or click the canvas to move the target, add boids, place rocks, and introduce chasers.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="An 800 by 600 flocking simulation: green triangular boids on a blue background, a black follow point, optional red chasers and brown rocks, and a boid count at the top left. Canvas actions are described in How to Use.">
+        <noscript>JavaScript is required to run the flocking simulation. Controls remain disabled without it. See How to Use for the available controls and canvas actions.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Flocking settings</legend>
+        <div class="simulation-controls__grid flocking-sliders">
+          <div class="flocking-slider">
+            <label class="simulation-control" for="separation">Separation <output class="simulation-control__value" for="separation">0.21</output></label>
+            <div class="flocking-slider__input">
+              <input id="separation" name="separation" type="range" min="0" max="1" step="0.01" value="0.21">
+              <button type="button" data-reset-slider="separation" aria-label="Reset separation">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="alignment">Alignment <output class="simulation-control__value" for="alignment">0.5</output></label>
+            <div class="flocking-slider__input">
+              <input id="alignment" name="alignment" type="range" min="0" max="1" step="0.01" value="0.5">
+              <button type="button" data-reset-slider="alignment" aria-label="Reset alignment">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="cohesion">Cohesion <output class="simulation-control__value" for="cohesion">0.2</output></label>
+            <div class="flocking-slider__input">
+              <input id="cohesion" name="cohesion" type="range" min="0" max="1" step="0.01" value="0.2">
+              <button type="button" data-reset-slider="cohesion" aria-label="Reset cohesion">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="mouse-follow">Mouse follow <output class="simulation-control__value" for="mouse-follow">0.03</output></label>
+            <div class="flocking-slider__input">
+              <input id="mouse-follow" name="mouseFollow" type="range" min="0" max="1" step="0.01" value="0.03">
+              <button type="button" data-reset-slider="mouse-follow" aria-label="Reset mouse follow">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="obstacle-avoidance">Obstacle avoidance <output class="simulation-control__value" for="obstacle-avoidance">0.2</output></label>
+            <div class="flocking-slider__input">
+              <input id="obstacle-avoidance" name="obstacleAvoidance" type="range" min="0" max="1" step="0.01" value="0.2">
+              <button type="button" data-reset-slider="obstacle-avoidance" aria-label="Reset obstacle avoidance">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="neighbor-distance">Neighbor distance <span class="simulation-control__value"><output for="neighbor-distance">80</output> px</span></label>
+            <div class="flocking-slider__input">
+              <input id="neighbor-distance" name="neighborDistance" type="range" min="0" max="100" step="1" value="80">
+              <button type="button" data-reset-slider="neighbor-distance" aria-label="Reset neighbor distance">Reset</button>
+            </div>
+          </div>
+          <div class="flocking-slider">
+            <label class="simulation-control" for="speed">Speed <span class="simulation-control__value"><output for="speed">3</output> px/frame</span></label>
+            <div class="flocking-slider__input">
+              <input id="speed" name="speed" type="range" min="0" max="10" step="1" value="3">
+              <button type="button" data-reset-slider="speed" aria-label="Reset speed">Reset</button>
+            </div>
+          </div>
+        </div>
+        <fieldset class="flocking-options">
+          <legend>On click action</legend>
+          <label class="simulation-control simulation-control--checkbox" for="click-follow"><input id="click-follow" name="clickAction" type="radio" value="Follow point" checked>Follow point</label>
+          <label class="simulation-control simulation-control--checkbox" for="click-boid"><input id="click-boid" name="clickAction" type="radio" value="Create boid">Create boid</label>
+          <label class="simulation-control simulation-control--checkbox" for="click-rock"><input id="click-rock" name="clickAction" type="radio" value="Create rock">Create rock</label>
+          <label class="simulation-control simulation-control--checkbox" for="click-chaser"><input id="click-chaser" name="clickAction" type="radio" value="Create chaser">Create chaser</label>
+        </fieldset>
+        <fieldset class="flocking-options">
+          <legend>Other options</legend>
+          <label class="simulation-control simulation-control--checkbox" for="show-distances"><input id="show-distances" name="showDistances" type="checkbox">Show distances</label>
+          <label class="simulation-control simulation-control--checkbox" for="avoid-walls"><input id="avoid-walls" name="avoidWalls" type="checkbox">Avoid walls</label>
+        </fieldset>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Click inside the canvas:</strong> choose an On click action first. Follow point moves the black target (the default action); Create boid adds a green boid; Create rock adds a stationary brown obstacle; Create chaser adds a larger red boid that pursues nearby regular boids. Clicking outside the canvas does nothing to the simulation. Dragging does not continuously add objects or move the target.</li>
+          <li><strong>Keyboard:</strong> there are no custom keyboard shortcuts or keyboard equivalents for canvas actions. Use Tab and Shift+Tab to reach native controls, arrow keys for sliders and radio choices, Space for checkboxes, and Enter or Space for buttons.</li>
+          <li><strong>Live sliders:</strong> Separation steers away from neighbors, Alignment matches their direction, and Cohesion steers toward their center. Mouse follow attracts boids to the last clicked target, not the moving pointer. Obstacle avoidance steers away from rocks. These five weights range from 0 to 1 in steps of 0.01; 0 disables that steering contribution.</li>
+          <li><strong>Neighbor distance:</strong> 0-100 px, step 1 (default 80), controls neighbor detection and the wall-avoidance zone. <strong>Speed:</strong> 0-10 px per animation frame, step 1 (default 3). The five steering defaults are 0.21, 0.5, 0.2, 0.03, and 0.2, respectively. All settings apply live to regular boids; chasers keep their original independent behavior.</li>
+          <li><strong>Individual Reset:</strong> restores just that slider's HTML default and updates its output and live setting; it does not restart or remove objects.</li>
+          <li><strong>Show distances:</strong> draws a circle at each regular boid's tip. The original drawing uses neighbor distance as the circle diameter, not the detection radius. <strong>Avoid walls:</strong> adds edge steering; a smaller neighbor distance can make this look better. Both options start off. Edge wrapping remains in place.</li>
+          <li><strong>Restart Simulation:</strong> creates 50 new regular boids, removes all added boids, chasers, and rocks, and centers the follow target, keeping every control value. <strong>Reset Everything:</strong> restores all defaults and restarts. A native form reset has the same full-reset behavior.</li>
+        </ul>
+        <p>The simulation targets 60 FPS on a fixed 800 by 600 logical canvas. Its display scales down uniformly on smaller screens without changing simulation coordinates. Controls stay disabled until initialization succeeds.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <p><strong>Unimplemented source note:</strong> "The code should be tidied." This is the original Hungarian <a href="./sketch.js#L1-L4">note in sketch.js, lines 1-4</a>, not completed work or a broader cleanup included in this integration.</p>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+- Feladatok
+  - √ készíts olyan kiegészítést, hogy valami (pl a node méret) változzon az inputok változásának a fényében
+  - X tesztelheted úgy is, hogy 2 inputváltozót befogadó (mouseX, mouseY) neurális hálót generálsz le és azt nézed, hogy az egér mozgatására mely neuronok "aktiválódnak", illetve mi lesz az output
+    - itt persze tanulásról vagy hasonlóról szó sincs, csak egy random hálót vizualizálunk
+    - ezt elengedem és elkezdem írni a saját neurális háló csomagomat helyette, majd utána térek rá vissza
+  - √ tesztelni excellel
+  - készíts batch gradiant descent alternatívát bele
+  - készíts GA lehetőségeket bele (mutation és hasonló)
+  - tesztelők, ha kész az NN:
+    - készíts egy xor vizuális példát az alábbi videó alapján (lehet akár kicsit interaktív is (nodeok száma, lr stb.))
+      - https://www.youtube.com/watch?v=188B6k_F9jU&list=PLRqwX-V7Uu6aCibgK1PTWWu9by6XFdCfh&index=19&ab_channel=TheCodingTrain
+    - alakítsd át az xor példát úgy, hogy egérrel tudj rajzolni 2 féle színt a canvasra
+    - hagyd benne az ábrázolást is!
+      - ezután tudj beállítani különböző NN paramétereket (NN felépítés, lr, stb.)
+      - majd mindig különböző beállításokkal taníttasd újra a NN-t egy gombnyomásra és nézd meg, hogy megtalálja-e a két féle csoportot
+      - elvileg úgy lehet tanítani, hogy a canvasról random x-y mintavételezik színt vagy ha a rajzot sok kis ponttal készíted el, akkor az lehet maga a minta
+      - erre van egy nagyon jó hasonló vizualizációs NN felület, részben onnan jött az ötlet
+    - tedd át erre az NN-re a kisautót

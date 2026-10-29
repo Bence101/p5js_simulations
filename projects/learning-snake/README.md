@@ -48,7 +48,7 @@ The shortcuts now ignore key events whose target is an input, select, textarea, 
 
 ## Canvas and layout
 
-The page uses the shared **stacked** layout and **fixed** sizing. The logical canvas stays 700&times;700 (`data-sizing="fixed"`, `--canvas-logical-width: 700px`, aspect ratio `1 / 1`), is parented to `#sketch`, and is never resized. Shared CSS scales the displayed canvas uniformly on narrow screens. The page keeps the simulation coordinates and has no resize handler.
+The page uses the shared **stacked** layout and **fixed** sizing. The logical canvas defaults to 700&times;700, defined only by `createCanvas(700, 700)` in [sketch.js](./sketch.js), and is parented to `#sketch` with `data-sizing="fixed"`. The p5 renderer is passed as `canvas` to `ProjectPage.connect()`, which derives the host's maximum width and aspect ratio from its logical dimensions, independently of pixel density. To change the canvas size or ratio, edit only the `createCanvas()` arguments; the board positions remain project-owned and do not automatically rearrange. Shared CSS displays the canvas at its natural logical size when space permits, or scales it uniformly down, never up, on narrow screens. The page keeps the simulation coordinates and has no resize handler.
 
 The chart lives in the shell's project-owned `extra` slot, so it appears below Project Information. It sits on a light panel because Chart.js 2.4.0 draws dark text and gridlines. The chart is responsive within a container whose height is clamped between 260 and 360 px, so it fits narrow screens without horizontal page scrolling. `maintainAspectRatio` is set to `false` for this.
 

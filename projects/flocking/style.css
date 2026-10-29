@@ -1,0 +1,39 @@
+.flocking-sliders {
+  gap: 0.75rem;
+}
+
+.flocking-slider .simulation-control {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.flocking-slider__input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flocking-slider__input input[type="range"] {
+  width: 100%;
+  max-width: 150px;
+  min-width: 0;
+  min-height: 32px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.flocking-slider__input button {
+  flex-shrink: 0;
+  padding-inline: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.simulation-controls .flocking-options {
+  margin-top: 1.25rem;
+}
+
+.flocking-options legend {
+  margin-bottom: 0.5rem;
+}

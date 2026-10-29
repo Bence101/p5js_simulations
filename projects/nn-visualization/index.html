@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Train a small neural network on three built-in two-dimensional classification datasets. Compare decision surfaces and network diagrams, configure layers, and pause training by accuracy.">
+    <title>Neural Network Visualization | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.1/math.js" defer></script>
+    <script src="./neuralNetwork.js" defer></script>
+    <script src="./neuralNetworkVisual.js" defer></script>
+    <script src="./dataGenerator.js" defer></script>
+    <script src="./chart.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="stacked" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/nn-visualization">
+      <p data-project-fallback role="status">The project interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Neural Network Visualization</h1>
+        <p class="project-summary">Explore a small neural network learning one of three two-dimensional classification data sets. Compare its decision surface with the network graph and adjust training, architecture, and accuracy-based pausing.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="The selected data set's decision surface and training samples beside a neural network graph, with FPS, learning-iteration, and accuracy readouts.">
+        <noscript>Enable JavaScript to run the neural network visualization. The simulation and its controls are unavailable without JavaScript.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Model and training settings</legend>
+        <input id="apply-mode" name="applyMode" type="text" hidden>
+        <div class="nn-application-mode">
+          <span class="nn-control-label">Setting application</span>
+          <button id="apply-mode-toggle" class="nn-mode-toggle" type="button" role="switch" aria-checked="false" aria-label="Apply setting changes after restart" aria-describedby="apply-mode-description">Apply immediately</button>
+          <p id="apply-mode-description" class="control-hint">Changes below take effect as you make them.</p>
+        </div>
+        <div class="simulation-controls__grid nn-settings-grid">
+          <fieldset class="nn-control-group">
+            <legend>Dataset</legend>
+            <div class="nn-dataset-options">
+              <label class="simulation-control nn-dataset-option" for="dataset-double-spiral">
+                <input id="dataset-double-spiral" name="dataset" type="radio" value="doubleSpiral">
+                <span>Double spiral</span>
+              </label>
+              <label class="simulation-control nn-dataset-option" for="dataset-quadrants">
+                <input id="dataset-quadrants" name="dataset" type="radio" value="sameSignQuadrants">
+                <span>Same-sign quadrants</span>
+              </label>
+              <label class="simulation-control nn-dataset-option" for="dataset-circle">
+                <input id="dataset-circle" name="dataset" type="radio" value="circle">
+                <span>Circle (radius 5)</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="simulation-control nn-range-control" for="updates-per-frame">
+            Training updates per frame
+            <span class="simulation-control__value"><output for="updates-per-frame"></output> updates</span>
+            <input id="updates-per-frame" name="updatesPerFrame" type="range" min="1" max="500" step="1">
+          </label>
+
+          <label class="simulation-control nn-range-control" for="learning-rate">
+            Learning rate
+            <span class="simulation-control__value"><output for="learning-rate"></output></span>
+            <input id="learning-rate" name="learningRate" type="range" min="0.001" max="0.1" step="0.001">
+          </label>
+
+          <fieldset class="nn-control-group">
+            <legend>Hidden layers</legend>
+            <p class="control-hint">Enter 0–9 nodes per layer; 0 omits that layer. Input and output sizes come from the selected dataset.</p>
+            <div class="nn-architecture-grid">
+              <label class="simulation-control nn-layer-control" for="hidden-layer-1">
+                Layer 1
+                <input id="hidden-layer-1" name="hiddenLayer1" type="number" min="0" max="9" step="1">
+              </label>
+              <label class="simulation-control nn-layer-control" for="hidden-layer-2">
+                Layer 2
+                <input id="hidden-layer-2" name="hiddenLayer2" type="number" min="0" max="9" step="1">
+              </label>
+              <label class="simulation-control nn-layer-control" for="hidden-layer-3">
+                Layer 3
+                <input id="hidden-layer-3" name="hiddenLayer3" type="number" min="0" max="9" step="1">
+              </label>
+              <label class="simulation-control nn-layer-control" for="hidden-layer-4">
+                Layer 4
+                <input id="hidden-layer-4" name="hiddenLayer4" type="number" min="0" max="9" step="1">
+              </label>
+              <label class="simulation-control nn-layer-control" for="hidden-layer-5">
+                Layer 5
+                <input id="hidden-layer-5" name="hiddenLayer5" type="number" min="0" max="9" step="1">
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="simulation-control nn-accuracy-control" for="accuracy-threshold">
+            Pause at accuracy
+            <span class="control-hint">Pause when accuracy reaches this percentage.</span>
+            <span class="nn-number-with-unit">
+              <input id="accuracy-threshold" name="accuracyThreshold" type="number" min="1" max="100" step="1">
+              <span>%</span>
+            </span>
+          </label>
+        </div>
+        <p id="settings-status" class="control-hint nn-status" role="status">Changes are applied immediately.</p>
+        <p id="training-status" class="control-hint nn-status" role="status">Training is running.</p>
+        <button id="resume-training" type="button" disabled>Resume Training</button>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Keyboard:</strong> there are no custom keyboard shortcuts. Use Tab to move through the controls, arrow keys to adjust sliders, and Enter or Space to activate buttons.</li>
+          <li><strong>Canvas:</strong> there are no custom canvas mouse controls.</li>
+          <li><strong>Setting application:</strong> the toggle switches between immediate changes and changes held until <strong>Restart Simulation</strong>. In immediate mode, training updates, learning rate, and pause threshold apply live; changing the dataset or architecture creates a fresh network immediately, and changing the dataset also generates new samples and a decision grid.</li>
+          <li><strong>Dataset:</strong> choose Same-sign quadrants, Double spiral, or Circle (inside/outside radius 5). Each problem has two inputs and one output.</li>
+          <li><strong>Training updates per frame:</strong> choose how many randomly sampled training examples are learned on each frame (1–500).</li>
+          <li><strong>Learning rate:</strong> choose the network's learning rate (0.001–0.1).</li>
+          <li><strong>Hidden layers:</strong> set up to five hidden layers with 0–9 nodes each. A value of 0 omits that layer; input and output layer sizes are selected by the dataset.</li>
+          <li><strong>Pause at accuracy:</strong> training pauses when accuracy reaches the entered percentage (1–100). <strong>Resume Training</strong> continues the current network; automatic pausing re-arms after accuracy falls below the threshold.</li>
+          <li><strong>Restart Simulation:</strong> applies staged settings, creates fresh random network weights and biases, and resets the learning-iteration count. It retains the current data and grid unless the selected dataset changed; the accuracy threshold can pause the new run again once it is reached.</li>
+          <li><strong>Reset Everything:</strong> restores all control defaults defined by the sketch and restarts with a fresh network.</li>
+        </ul>
+        <p>The canvas places the selected dataset's decision surface beside the network graph and reports FPS, learning iterations, and training-set accuracy.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>The following original notes are unimplemented ideas, not features of this page:</p>
+        <ul>
+          <li>Explore a batch gradient-descent alternative (<a href="./todo.txt#L7">todo.txt, line 7</a>) and genetic-algorithm options such as mutation (<a href="./todo.txt#L8">todo.txt, line 8</a>).</li>
+          <li>Future testing ideas, once the network is ready, include an XOR visualization and an interactive two-class drawing experiment: vary network settings, retrain to see whether it separates the groups, and retain the network visualization. The notes suggest using canvas coordinates and colors or drawing points as training examples (<a href="./todo.txt#L9-L17">todo.txt, lines 9–17</a>). These ideas are not implemented here.</li>
+          <li>Try applying this neural network to the small-car simulation (<a href="./todo.txt#L18">todo.txt, line 18</a>).</li>
+          <li>Source-code notes suggest considering deep copies and activation min/max handling in the visualizer (<a href="./neuralNetworkVisual.js#L16-L21">neuralNetworkVisual.js, lines 16–21</a>), and identify <code>getNNData()</code> as untested and <code>copy()</code> as unfinished (<a href="./neuralNetwork.js#L157-L170">neuralNetwork.js, lines 157–170</a>).</li>
+          <li>Other unimplemented design notes propose separating feed-forward work from <code>predict()</code> and extracting error calculations into a separate class (<a href="./neuralNetwork.js#L15">neuralNetwork.js, line 15</a>; <a href="./neuralNetwork.js#L133-L144">lines 133–144</a>).</li>
+        </ul>
+        <p>The earlier mouse-driven random-network experiment is marked abandoned in <a href="./todo.txt#L3-L5">todo.txt, lines 3–5</a>; it is not a planned interaction for this page.</p>
+      </div>
+    </main>
+  </body>
+</html>

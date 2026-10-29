@@ -1,0 +1,104 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+
+.nn-settings-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  align-items: start;
+}
+
+.simulation-controls .nn-control-group {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.nn-control-group legend {
+  padding-inline: 0.25rem;
+}
+
+.nn-dataset-options {
+  display: grid;
+  gap: 0.35rem 1rem;
+}
+
+.nn-dataset-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nn-dataset-option input {
+  flex: 0 0 auto;
+}
+
+.nn-range-control input[type="range"] {
+  max-width: 15rem;
+}
+
+.nn-architecture-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.nn-layer-control {
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.nn-layer-control input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 0.4rem;
+}
+
+.nn-accuracy-control {
+  align-content: start;
+}
+
+.nn-number-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nn-number-with-unit input {
+  width: 6rem;
+}
+
+.nn-application-mode {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.nn-control-label {
+  font-weight: 600;
+}
+
+.nn-mode-toggle {
+  min-width: 13rem;
+}
+
+.nn-status {
+  margin-block: 0.5rem;
+}
+
+#resume-training {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .nn-architecture-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

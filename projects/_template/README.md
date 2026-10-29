@@ -42,8 +42,8 @@ The starter's `data-project-fallback` paragraph is the only non-slot direct chil
 | --- | --- |
 | Standard sections/headings, wrappers, navigation, source-link presentation, standard button placement, or section order | [project-shell.js](../../assets/js/project-shell.js) |
 | Theme, spacing, field/button styling, sidebar/stacked layout, and mobile breakpoints | [style.css](../../assets/css/style.css) |
-| Typed settings, outputs, native reset synchronization, and restart dispatch | [project-page.js](../../assets/js/project-page.js) |
-| A project's content, native control defaults, extra actions, matrix mapping, simulation, dependencies, or logical canvas resizing | That project's files |
+| Fixed canvas display dimensions, typed settings, outputs, sketch-provided control defaults, native reset synchronization, and restart dispatch | [project-page.js](../../assets/js/project-page.js) |
+| A project's content, control defaults, extra actions, matrix mapping, simulation, dependencies, or logical canvas resizing | That project's files |
 
 The shell's single markup definition is the source of truth for shared structure. Add a generic notice/block or move standard buttons there, not in every project. Existing opted-in pages use the changed structure on reload; adding a new block that needs unique project information still requires authoring that information per project. Unmigrated pages and the landing page are not automatically opted in.
 
@@ -57,10 +57,10 @@ For later global changes:
 
 ### Initialization and node preservation
 
-1. The browser parses the project's HTML, including native defaults and the disabled controls fieldset.
+1. The browser parses the project's HTML, including native controls and the disabled controls fieldset.
 2. The deferred shell validates the slots, creates the common structure, and **moves the original content nodes** into it. No HTML fragment is fetched; controls and the canvas host are not cloned.
 3. The controls slot becomes a child of the shell's disabled `#simulation-fields`. Only its fallback-only disabled attribute is released; nested project-disabled groups are left alone.
-4. Project setup creates its real canvas, generates any additional controls, and connects the adapter once. The existing controller applies settings, restarts, then enables the shared fieldset and standard buttons.
+4. Project setup creates its real canvas, generates any additional controls, and connects the adapter once. When supplied, sketch defaults are applied to the controls and their native reset values before the controller reads settings, restarts, and enables the shared fieldset and standard buttons.
 
 Do not load the shell with `async`, defer mounting until after p5.js setup, rerender it during animation, or replace its nodes after connection. Project scripts can rely on the standard IDs by setup time. Missing/broken shell or adapter initialization must leave a visible warning/disabled controls and console errors, never a success-shaped fallback.
 
@@ -85,6 +85,8 @@ Record the original behavior before writing the new markup. Keep the inventory i
 ```js
 // Call once, from setup() or the supplied simulation's equivalent ready callback.
 ProjectPage.connect({
+  canvas, // The p5 renderer returned by createCanvas(); required for fixed sizing.
+  defaults, // Optional object keyed by the controls' name attributes.
   applySettings(settings) {
     // Apply real live settings to the existing simulation here.
     // Defer only settings that genuinely require a restart.
@@ -96,15 +98,15 @@ ProjectPage.connect({
 });
 ```
 
-The bodies above describe required work, not a ready-to-enable adapter. [Bouncing Ball](../bouncing-ball/sketch.js) is the connected example.
+The bodies above describe required work, not a ready-to-enable adapter. [Bouncing Ball](../bouncing-ball/sketch.js) is a connected responsive example, where `canvas` is optional; [Particle Life](../particle-life/sketch.js) demonstrates fixed sizing.
 
 - The shell supplies the required IDs: `simulation-controls` (form), `simulation-fields` (disabled outer fieldset), `reset-everything` (outside the form), `restart-simulation` (inside), and `simulation-status` (visible `role="status"` message). It also owns `controls-title`, `how-to-use`, `project-information`, `background`, and `next-steps`. Do not reuse these IDs or author the standard buttons/forms/headings in project slots. Keep reset's `type="reset" form="simulation-controls"` and restart's `type="button"` when changing the shared shell.
 - Give each setting an associated label, unique `id`, and `name`. Names become keys in a plain object. `range` and `number` values become finite numbers, checkboxes become booleans (including unchecked `false`), and other single-value fields remain strings. Radio groups use one name and the checked value. Use only single-value inputs, selects, and textareas; file uploads, multi-selects, and repeated names other than radio groups are not supported.
-- Keep initial values in HTML: `value`, `checked`, textarea text, or an option's `selected` attribute. Provide `<output for="field-id">` for each slider, with units in adjacent text. The controller updates outputs automatically. Number controls must always contain valid finite values; add project-specific range/validity handling if the supplied simulation needs editable number fields.
-- Connection reads the defaults, updates outputs, calls `applySettings(settings)`, then `restart(settings)`. It then enables the controls and announces readiness.
+- For sketch-owned defaults, pass `defaults` as an object keyed by each control's `name`. The controller sets both current and native reset values before initial synchronization; HTML can then contain only the control structure, labels, and constraints. If `defaults` is omitted, native HTML values remain in use. Provide `<output for="field-id"></output>` for each slider, with units in adjacent text. The controller updates outputs automatically. Number controls must always contain valid finite values; add project-specific range/validity handling if the supplied simulation needs editable number fields.
+- For fixed sizing, connection first validates `canvas` and derives the host's maximum width and aspect ratio from its logical dimensions. It then reads the defaults, updates outputs, calls `applySettings(settings)`, then `restart(settings)`. It enables the controls and announces readiness only after successful initialization.
 - Every form `input` or `change` event reads **all** named settings and calls `applySettings` with a fresh object. Treat it as read-only; make the callback idempotent and safe during animation. It must not restart on every update. The controller keeps its own current settings; simulation code should not read the form directly.
 - **Restart Simulation** rereads and applies current settings, then calls `restart(settings)`. No control value changes. The adapter must use the supplied settings, including any restart-only fields.
-- **Reset Everything** uses the form's native reset, restoring all HTML defaults, including checkboxes. The reset-event handler waits until those defaults are restored, then rereads settings, updates outputs, applies settings, and restarts. It also handles a direct `form.reset()` call. No page reload is used.
+- **Reset Everything** uses the form's native reset, restoring defaults established by the controller (from the sketch when `defaults` is supplied), including checkboxes. The reset-event handler waits until those defaults are restored, then rereads settings, updates outputs, applies settings, and restarts. It also handles a direct `form.reset()` call. No page reload is used.
 - Failed or missing adapters must not be hidden behind enabled, nonfunctional buttons. Initialization exceptions remain visible in the console, and the pre-connection status explains why controls are disabled. Keep useful no-script text.
 
 For Bouncing Ball the settings shape is `{ color: string, count: number, diameter: number, collisions: boolean }`; appearance and collisions update live, while count applies at restart. Other projects define their own names and behavior independently.
@@ -113,14 +115,13 @@ For Bouncing Ball the settings shape is `{ color: string, count: number, diamete
 
 - Create every named setting **after the shell mounts and before** calling `ProjectPage.connect()`. The controller captures the controls once; replacing their DOM nodes afterward leaves it reading detached controls. Randomization should update existing controls, not rebuild the panel.
 - Give each matrix entry its own setting name and accessible label identifying both affected and neighboring groups. Map those flat settings back into the simulation's matrix inside the project adapter; no shared matrix/simulation framework is needed.
-- If the original simulation starts with random settings, sample them once during initialization and establish native defaults before connection. For a generated range input, assign its value first, then capture the browser-normalized value:
+- If the original simulation starts with random settings, sample them once during initialization and include those values in the `defaults` object passed to the controller. For a generated range input, assign its value before connection so its browser-normalized value can be included:
 
   ```js
   input.value = String(initialValue);
-  input.defaultValue = input.value;
   ```
 
-  This makes reset restore the initial control values for that page visit. Later randomization changes only `.value`, never `.defaultValue`. Document this distinction from drawing a new random configuration.
+  The controller establishes both the current and native reset values from `defaults`. Later randomization changes only `.value`, never `.defaultValue`. Document this distinction from drawing a new random configuration.
 - Keep display formatting separate from model precision. An arbitrary random fraction should not be rounded to two decimals or unintentionally quantized by `step="0.1"`. A range with `step="any"` can retain native numeric precision while project-specific keyboard handling preserves an existing 0.1 increment. Browsers may normalize floating-point serialization; do not promise bit-for-bit preservation of the original sample.
 - The controller writes slider outputs before calling `applySettings`. Project-specific formatting, such as a two-decimal matrix output, can be applied there without changing the numeric setting or dispatching another event.
 - Programmatic `.value` changes do not emit input events. After a batch randomization, dispatch one bubbling `input` event from the form or a descendant so the controller reads every updated value and applies settings once. Do not update only simulation globals: restart would reread stale controls.
@@ -133,19 +134,29 @@ On narrow screens, contain horizontal scrolling in a focusable, named matrix reg
 
 ## Canvas sizing: choose per project
 
-The shared CSS scales the displayed canvas; it never calls p5.js or changes simulation coordinates. Set `data-sizing` on `#sketch` and declare the project's aspect ratio using `--canvas-aspect-ratio` (default `16 / 10`). Do not install a resize handler blindly.
+The shared CSS scales the displayed canvas; it never calls p5.js or changes simulation coordinates. Set `data-sizing` on `#sketch`. Fixed projects derive their display dimensions from `createCanvas()` at connection; responsive projects declare their aspect ratio using `--canvas-aspect-ratio` (default `16 / 10`). Do not install a resize handler blindly.
 
 ### Fixed logical dimensions
 
 For a simulation designed around 800 by 500 logical pixels:
 
 ```html
-<div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed"
-     style="--canvas-logical-width: 800px; --canvas-aspect-ratio: 800 / 500;">
-</div>
+<div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed"></div>
 ```
 
-Keep its original `createCanvas(800, 500)` and parent the canvas to this host. Do **not** call `resizeCanvas` on host or window changes. CSS limits the host to the logical width and scales the displayed canvas uniformly on smaller screens without changing coordinates or physics. Declare the actual logical width and matching ratio, not the sample values. Verify pointer hit-testing at the scaled size with the project's p5.js version; custom pixel-coordinate handling may need project-specific conversion.
+In the simulation's setup:
+
+```js
+const canvas = createCanvas(800, 500);
+canvas.parent("sketch");
+ProjectPage.connect({ canvas, applySettings, restart });
+```
+
+`createCanvas()` is the single source of truth for fixed dimensions: change its arguments to change the logical size and display ratio. Do not repeat width or ratio values in HTML. At connection, the controller sets `--canvas-logical-width` and `--canvas-aspect-ratio` on the host from the p5 renderer's logical `width` and `height`, not the density-scaled canvas bitmap. Missing canvases, canvases outside the host, and non-positive or non-finite logical dimensions throw an initialization error and leave controls disabled.
+
+CSS displays the canvas at its natural logical size when space permits and scales it uniformly **down, never up**, to fit smaller containers. The sidebar, page width limit, and viewport can constrain the displayed width. Do **not** call `resizeCanvas` on host or window changes: logical coordinates and physics remain unchanged. Fixed dimensions are synchronized once at connection, not observed for runtime changes.
+
+Existing content positions and geometry remain project-owned; changing canvas dimensions does not automatically rearrange charts or objects. Verify pointer hit-testing at the scaled size with the project's p5.js version; custom pixel-coordinate handling may need project-specific conversion.
 
 ### Responsive dimensions
 
@@ -159,7 +170,7 @@ Bouncing Ball measures host width, rounds logical dimensions to whole pixels at 
 - Serve the repository over local HTTP, also under a non-root URL prefix to emulate GitHub Pages. Check exact filename case and relative paths (`../../index.html`, `../../assets/...`, local assets). No framework, package installation, build, or backend is needed.
 - Check console/network errors, p5.js loading, the Back to Portfolio link, and the exact project's GitHub directory URL. The template's placeholder source URL is intentionally not a valid project destination until replaced.
 - Verify live updates during animation, restart-only settings, repeated restarts without control changes, full reset of every default and output, and a direct form reset. Test a failed/unconnected adapter: controls must remain disabled.
-- Test desktop, narrow/mobile widths, host resizing, correct aspect ratio, bounded objects, no horizontal overflow, Tab/Shift+Tab focus order, arrow-key sliders, native picker/checkbox behavior, and keyboard button activation. Confirm existing mouse and keyboard interactions still work.
+- Test desktop, narrow/mobile widths, host resizing, correct aspect ratio, bounded objects, no horizontal overflow, Tab/Shift+Tab focus order, arrow-key sliders, native picker/checkbox behavior, and keyboard button activation. For fixed sizing, vary only the `createCanvas()` arguments to verify smaller, larger, and changed-ratio canvases, no upscaling, and density-independent logical sizing. Confirm existing mouse and keyboard interactions still work.
 - Validate the shell on the unconnected template, sidebar Bouncing Ball, and stacked Particle Life. Check that the canvas host/control nodes survive mounting, optional placeholders and extra sections render correctly, invalid slots/configuration fail explicitly, and unavailable shell/adapter code leaves controls disabled. For shared structural changes, verify both reference pages receive the change without editing their HTML; do not rely only on a fresh copy of the starter.
 - For complex panels, test every matrix mapping and keyboard-focus position, not just the entry count or one representative slider. Use asymmetric values to detect transposed/mirrored mappings and check the actual simulation response. Test both initial and regenerated diagonal values.
 - After randomizing settings, check repeated restarts retain every value and recreate simulation state; full reset and direct `form.reset()` must restore the original defaults and outputs, not the latest randomization. Deterministic checks may pause animation, but also verify live updates while it runs and restore a normal running page afterward.
@@ -178,5 +189,16 @@ The shared-shell integration was checked in Chromium at 1440, 1024, 390, and 320
 - Native nested fieldsets, multiple custom actions/control types, optional content, and multiple extra sections were exercised with a browser fixture. Typed settings, custom actions, restart/reset, and intentionally disabled nested groups were preserved.
 - Both reference simulations retained live controls, restart/reset and direct form reset, mouse interactions, fixed/responsive sizing, and simulation state/bounds. All 36 Particle Life mappings, actual force directions, and keyboard-focus positions were checked.
 - Missing scripts, failing adapter callbacks, invalid configuration/slots, and JavaScript disabled were tested separately from normal loading. Normal loads produced no console/network errors; fallback warnings and disabled controls remained in failure cases.
+
+### Canvas sizing regression validation
+
+The canvas adapter was checked in Chromium under `/p5js_simulations/`:
+
+- Flocking, Neural Network Visualization, Learning Snake, and Particle Life retained their original logical dimensions at viewport widths of 1440, 1024, 801, 800, 390, and 320 px. Canvas and host ratios matched, controls initialized, and settled layouts had no horizontal overflow. Local assets and navigation links loaded without console or network errors.
+- Browser-only sketch overrides changed only the canvas creation dimensions: Flocking at 400 x 300, 400 x 600, 600 x 600, and 1600 x 900; Neural Network Visualization at 600 x 900 and 1000 x 700. Desktop and 320 px checks confirmed correct host dimensions, ratios, downscaling, and no upscaling. Flocking at 400 x 300 and Neural Network Visualization at 1000 x 700 also passed with p5 `pixelDensity(2)`: doubled bitmap dimensions did not double the displayed dimensions. The overrides were not saved to the sketches.
+- All four fixed projects passed live-setting changes, animation, three repeated restarts retaining settings, full reset of native defaults, direct form reset, output synchronization, and preservation of the original canvas element and dimensions.
+- Flocking's four canvas actions and outside-click rejection passed at desktop and mobile widths, including a changed-ratio 400 x 600 canvas at pixel density 2. Particle Life's scaled mouse creation and deletion passed at desktop and 320 px.
+- Bouncing Ball retained its host observer, logical resizing, exact displayed 16:10 ratio, object identities, and object bounds through all six viewport widths and back to desktop. Live settings, restart, and reset still worked without requiring a canvas in its responsive adapter.
+- Isolated controller fixtures rejected 14 invalid canvas configurations without enabling controls or applying settings. Valid fixed sizing used logical rather than bitmap dimensions; typed settings, duplicate-connection rejection, optional canvas for responsive sizing, adapter-failure handling, and the disabled unconnected template also passed.
 
 These are browser/emulation checks, not a physical-device or cross-browser guarantee. The shared structure requires JavaScript, and each project's original dependency availability and documented legacy limitations still apply.

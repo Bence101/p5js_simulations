@@ -16,15 +16,90 @@ window.ProjectPage = (() => {
     const reset = document.getElementById("reset-everything");
     const restart = document.getElementById("restart-simulation");
     const status = document.getElementById("simulation-status");
+    const stage = document.getElementById("sketch");
     if (!(form instanceof HTMLFormElement) || !(fields instanceof HTMLFieldSetElement)
-      || !(reset instanceof HTMLButtonElement) || !(restart instanceof HTMLButtonElement) || !status) {
+      || !(reset instanceof HTMLButtonElement) || !(restart instanceof HTMLButtonElement) || !status || !stage) {
       throw new Error("Project page markup is not ready. Load project-shell.js before the simulation setup.");
     }
     if (fields.form !== form || reset.form !== form || reset.type !== "reset" || restart.type !== "button") {
       throw new Error("Project page controls must preserve the shared form and reset/restart button contract.");
     }
+    if (stage.dataset.sizing === "fixed") {
+      const canvas = adapter.canvas;
+      if (!(canvas?.elt instanceof HTMLCanvasElement) || canvas.elt.parentElement !== stage
+        || !Number.isFinite(canvas.width) || canvas.width <= 0
+        || !Number.isFinite(canvas.height) || canvas.height <= 0) {
+        throw new Error("A fixed-size adapter must provide the p5 canvas returned by createCanvas(), parented to #sketch, with positive finite logical dimensions.");
+      }
+      stage.style.setProperty("--canvas-logical-width", `${canvas.width}px`);
+      stage.style.setProperty("--canvas-aspect-ratio", `${canvas.width} / ${canvas.height}`);
+    }
     const controls = [...form.querySelectorAll("input[name], select[name], textarea[name]")];
     let settings;
+
+    function setControlDefaults(defaults) {
+      if (defaults === null || typeof defaults !== "object" || Array.isArray(defaults)) {
+        throw new Error("Project defaults must be an object keyed by named form controls.");
+      }
+
+      for (const [name, value] of Object.entries(defaults)) {
+        const group = controls.filter((control) => control.name === name);
+        if (group.length === 0) {
+          throw new Error(`The default "${name}" does not match a named project control.`);
+        }
+
+        const radioGroup = group.every((control) =>
+          control instanceof HTMLInputElement && control.type === "radio");
+        if (radioGroup) {
+          const selected = group.find((control) => control.value === String(value));
+          if (!selected) {
+            throw new Error(`The default "${name}" must match one of its radio options.`);
+          }
+          for (const control of group) {
+            control.defaultChecked = control === selected;
+            control.checked = control === selected;
+          }
+          continue;
+        }
+
+        if (group.length !== 1) {
+          throw new Error(`The default "${name}" must match one control or a radio group.`);
+        }
+
+        const control = group[0];
+        if (control instanceof HTMLInputElement && control.type === "checkbox") {
+          if (typeof value !== "boolean") {
+            throw new Error(`The checkbox default "${name}" must be a boolean.`);
+          }
+          control.defaultChecked = value;
+          control.checked = value;
+        } else if (control instanceof HTMLSelectElement) {
+          if (control.multiple) {
+            throw new Error(`The "${name}" control must not be a multi-select.`);
+          }
+          const selected = [...control.options].find((option) => option.value === String(value));
+          if (!selected) {
+            throw new Error(`The default "${name}" must match one of its select options.`);
+          }
+          for (const option of control.options) {
+            option.defaultSelected = option === selected;
+            option.selected = option === selected;
+          }
+        } else if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+          if (control instanceof HTMLInputElement && control.type === "file") {
+            throw new Error(`The "${name}" control cannot use a project default.`);
+          }
+          control.value = String(value);
+          control.defaultValue = control.value;
+        } else {
+          throw new Error(`The "${name}" control type does not support project defaults.`);
+        }
+      }
+    }
+
+    if (adapter.defaults !== undefined) {
+      setControlDefaults(adapter.defaults);
+    }
 
     function synchronize() {
       settings = {};

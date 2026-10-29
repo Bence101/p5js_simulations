@@ -21,6 +21,7 @@ function setup() {
   
   initControlPanel()
   ProjectPage.connect({
+    canvas,
     applySettings: applyControlSettings,
     restart: regenerateCells,
   });
@@ -82,7 +83,6 @@ function regenerateCells() {
     cells.push(new Cell(pos, groupNum));
   }
 }
-
 
 
 
