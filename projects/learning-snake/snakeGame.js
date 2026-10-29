@@ -91,7 +91,7 @@ class SnakeAgent {
     if (!this.agent.loopFail) {
       // fitness = steps + score*50 + ((score**2)/steps)*1000
       // fitness = steps + ((score**2)/steps)*1000
-      fitness = steps+(2**score+score**2.5*scoreMultiplier)-(score**1.2*(stepMultiplier*steps)^1.8)
+      fitness = steps+(2**score+score**2.5*scoreMultiplier)-(score**1.2*(stepMultiplier*steps)**1.8)
       // print(steps, score, ((score**2)/steps)*1000, ((score**2)/steps), (score**2), 0/steps)
     } 
     fitness = max(0, fitness)
