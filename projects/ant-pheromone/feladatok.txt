@@ -1,0 +1,37 @@
+
+! obstacle handling
+  ! valamiért két vagy több obstacle találkozásánál összezavarodnak
+  ! próbálkoztam dinamikus pointsToAvoid pontok bevezetésével, de ezek nem oldották meg a kérdést, ha pedig csak ezeket kerülöm el, akkor az akadály közepén ragadnak a hangyák
+  ! a szél elkerülés se működiktúl jól...
+  ! esetleg a szél típust érdemes lehet kipróbálni a hangya pozíció szélre projektálásának elkerülését
+
+
+
+
+
+
+
+
+
+
+RÉGI LISTA:
+
+√ végig kell gondolni, hogy hogyan tárolódjanak az objektumok, mi legyen a hiarerchia
+√ addig nem igazán lehet folytatni, amíg ezt nem gondolod végig!
+√ nagyjából végiggondoltam és leírtam a OneNoteba 
+
+√ tedd át az anthilleket a map alá
+√ szervezd át a kódot, hogy minden a hiarerchia szerint legyen tárolva (elvileg csak az anthill kellett)
+! az objektumok közötti interakciók (jelenleg food-ant gyűjtés) ne az updateken keresztül menjen végig, hanem hozz létre rájuk a simulation szintjén külön függvényt, ami ezt kezeli
+! a fentihez hasonlóan lehet, hogy érdemes minden nem interakciós updatet is felhozni a simulation szintjére, de ez nem biztos
+  ? lehet, hogy a move már mehet a hierarchián keresztül, de addigra már a food és obstacles csekkolásoknak meg kell lenniük
+  ? ezen lehet, hogy változtat a feromonok bevezetése
+  ? de akár ott is lehet, hogy az interakciót kezelheti egy szimulációs szinten lévő függvény (ami beállítja a pupose-t és a targetet), és ezután a hierarchia hívja meg az updatet
+  
+! a fentiekkel egyideűleg a settings JSON-t is újra kell gondolni, valószínűleg az lesz a jó irány, ha a hierarchiát követi az is és minden lentebbi osztály már csak annyi infót kap meg, ami önmagához és az alosztályaihoz szükséges
+√ készítsd el a feromont
+! a feromon készítést hagyjuk teljesen anthill szinten
+? a hiarerchiában hol helyezkedik el a feromon?
+  ? az anthill alatt lenne érdemes létrehozni, de kérdés, hogy a hangya hogyan láthatja az anthillt?
+  ? erre a válasz valószínűleg az, hogy ugyanúgy, mint pl az ételt, a szimulációs szintű függvény mutatja meg neki és az hozza létre a feromont
+  ? ez magával hozza azt is, hogy a JSON-ben is elég az Anthill szintjéig elvinni a feromon beállításait (a hangyáig már nem kel), mert a feromont szimulációs szempontból a hangya, programozási szempontból viszont az anthill fogja létrehozni és tárolni

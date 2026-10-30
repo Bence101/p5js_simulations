@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watch ants explore a fixed map, collect food, and leave distinct wander and return pheromones. Adjust simulation speed and pheromone visibility without changing the original foraging model.">
+    <meta name="theme-color" content="#141715">
+    <title>Ant Pheromone | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./supportFunctions.js" defer></script>
+    <script src="./infoTable.js" defer></script>
+    <script src="./food.js" defer></script>
+    <script src="./pheromone.js" defer></script>
+    <script src="./obstacle.js" defer></script>
+    <script src="./ant.js" defer></script>
+    <script src="./antHill.js" defer></script>
+    <script src="./field.js" defer></script>
+    <script src="./simulation.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/ant-pheromone">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Ant Pheromone</h1>
+        <p class="project-summary">Ants wander through a fixed map, collect food, and return it to their anthill while leaving distinct wander and return pheromones. Explore the existing discrete foraging simulation, its obstacle behavior, and the effect of pheromone visibility without changing its model.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" tabindex="0" role="group" aria-label="Interactive ant foraging simulation. Click inside the canvas to add food. Focus this canvas to use the A, D, and R shortcuts.">
+        <noscript>JavaScript is required to run the ant foraging simulation. Enable JavaScript and serve this project over HTTP to load its configuration, sprite, and p5.js files.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Simulation controls</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control simulation-control--speed" for="simulation-speed">
+            Simulation speed (updates per rendered frame)
+            <input id="simulation-speed" name="simSpeed" type="number" min="0" step="1" required inputmode="numeric" aria-describedby="simulation-speed-help simulation-speed-error">
+          </label>
+          <p id="simulation-speed-help" class="control-hint">Use a whole number of 0 or greater. Speed changes apply live; 0 pauses simulation updates while the page and canvas remain usable.</p>
+          <p class="control-hint">Speed is uncapped and counts updates, not guaranteed wall-clock acceleration. High speeds, additional ants, and many pheromones increase computational cost.</p>
+          <p id="simulation-speed-error" class="control-hint" role="alert" hidden></p>
+          <label class="simulation-control simulation-control--checkbox" for="show-pheromones">
+            <input id="show-pheromones" name="showPheromones" type="checkbox">
+            Show pheromones
+          </label>
+          <p class="control-hint">This checkbox changes pheromone rendering only. Pheromone creation, sensing, following, and lifetime updates continue while marks are hidden.</p>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <h3>Actions and shortcuts</h3>
+        <ul>
+          <li><strong>Focus the canvas</strong> with Tab or by clicking it. The A, D, and R shortcuts work only while the simulation canvas has keyboard focus; they do not run from form controls or buttons, and Ctrl/Cmd browser shortcuts are left alone.</li>
+          <li><strong>D</strong> increases speed by 1 while the current speed is 4 or less; above 4 it increases speed by 10. For example, the sequence can be 4, 5, 15, 25.</li>
+          <li><strong>A</strong> decreases speed by 10, with the original lower bound of 0.</li>
+          <li><strong>R</strong> requests the original fast-forward by setting the skipped-update counter to 15 minus 1000. At speed 1 that means 1000 compensated updates plus one ordinary update in the same draw callback. At speed 0 it stays pending until updates resume. A large loop can temporarily monopolize a draw callback; R is not Restart Simulation.</li>
+          <li><strong>Click inside the canvas</strong> to add one food pile containing 30 units at the pointer position. Clicks outside the canvas do not add food. A touch tap is supported as a single canvas click; dragging does not paint food.</li>
+          <li><strong>Hover over an ant</strong> to show its existing tracing and inspection overlay. The overlay includes its current purpose, pheromone count, time since seeing the anthill, and obstacle-avoidance state.</li>
+        </ul>
+        <h3>Controls and simulation actions</h3>
+        <ul>
+          <li><strong>Simulation speed:</strong> an integer number of updates per rendered frame, applied live with no maximum. A value of 0 pauses model updates, but rendering and page controls remain available. The first 15 updates are compensated as warm-up; with speed 1, the first draw callback therefore also runs one ordinary update (16 updates total). If speed is 0, the warm-up waits until updates resume.</li>
+          <li><strong>Show pheromones:</strong> toggles only the drawing of pheromone marks; it does not disable pheromone behavior or aging.</li>
+          <li><strong>Restart Simulation:</strong> creates a fresh world using the current controls, including a speed of 0. It discards accumulated entities and counters without changing the controls.</li>
+          <li><strong>Reset Everything:</strong> restores the configuration-derived control defaults and creates a fresh default world. The native form reset has the same effect.</li>
+        </ul>
+        <p>The fixed canvas scales down uniformly to fit. p5.js maps pointer coordinates back to the original logical canvas when displayed smaller.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>The original planning notes distinguish completed structure from open questions. The old list's hierarchy notes and pheromone creation are reflected in the current code: the field owns anthills, food, and obstacles; each anthill owns its ants and pheromones; food interaction is handled by the simulation; and pheromones are generated and stored at anthill level. The note about whether to move more non-interaction updates into the simulation, and its suggested settings reorganization, remain design questions rather than work undertaken here. See <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/ant-pheromone/feladatok.txt#L17-L37">the original list, lines 17-37</a>.</p>
+        <p>Obstacle behavior remains a known limitation, not an integration change. The notes report confusion where multiple obstacles meet, failed experiments with dynamic avoidance points, ants getting stuck when avoiding only those points, and unreliable edge avoidance; projecting ant positions onto edges was only suggested. The current avoidance calculation also states that it only works for non-diagonal rectangular obstacles. See <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/ant-pheromone/feladatok.txt#L2-L6">the original obstacle notes, lines 2-6</a> and <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/ant-pheromone/obstacle.js#L75">the obstacle implementation, line 75</a>.</p>
+        <p>Commented-out experiments in the project source are not active features or additional plans. Third-party p5.js comments are not project TODOs.</p>
+      </div>
+    </main>
+  </body>
+</html>

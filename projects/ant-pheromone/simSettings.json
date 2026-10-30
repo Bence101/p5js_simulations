@@ -1,0 +1,77 @@
+{
+  "showPheromones": 1,
+  "simSpeed": 1,
+  "skipFirstNFrame": 15,
+  "mapWidth": 600,
+  "mapHeight": 600,
+  "anthills": [
+    {
+      "name": "First Anthill",
+      "id": 0,
+      "pos": [
+        150,
+        150
+      ],
+      "color": [
+        200,
+        100,
+        100
+      ],
+      "size": 100,
+      "initialFood": 0,
+                          "initialAnts": 20,
+      "maxAntHillLastSeen": 450,
+      "antCost": 10,
+      "antProperties": {
+        "traceRate": 0,
+        "hitBoxRadius": 20,
+        "fieldOfView": 1.5,
+        "viewDistance": 150,
+        "size": 15,
+        "speed": 2,
+        "steeringStrength": 0.4,
+        "wanderAnywayRate": 0.001,
+        "wanderAnywayCooldown": 1,
+        "wanderingProperties": {
+          "steeringSensitivity": 0.1
+        }
+      },
+      "pheromoneRate": 50,
+      "pheromoneProperties": {
+        "traceRate": 0.9,
+        "size":10,
+        "lifeTime": 200,
+        "lifeTimeWanderMultiplier": 5,
+        "lifeTimeReturnMultiplier": 1,
+        "wanderColor" : [100, 100, 200],
+        "returnColor" : [200, 100, 50]
+      }
+    }
+  ],
+  "foods": {
+    "color": [
+        50,
+        200,
+        50
+      ],
+    "foods": [
+      [200, 400, 100],
+      [550, 100, 100],
+      [500, 280, 100]
+    ]
+  },
+  "obstacles": {
+    "color": [
+        50,
+        200,
+        200
+      ],
+    "obstacles": [
+      [300, 10, 20, 200],
+      [80, 300, 240, 20],
+      [300, 320, 20, 130],
+      [390, 180, 20, 170],
+      [410, 180, 130, 20]
+    ]
+  }
+}
