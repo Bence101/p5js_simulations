@@ -1,0 +1,42 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+#sketch.sketch-stage[data-sizing="fixed"] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  aspect-ratio: auto;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+
+#sketch.sketch-stage[data-sizing="fixed"] > canvas {
+  border-radius: var(--radius);
+}
+
+.generation-chart {
+  width: min(100%, 400px);
+  margin-top: 1.5rem;
+}
+
+.generation-chart h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.generation-chart__canvas {
+  position: relative;
+  height: 200px;
+}
+
+.simulation-control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

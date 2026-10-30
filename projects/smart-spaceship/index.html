@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watch colored spaceships evolve movement genes as they navigate obstacles toward a target.">
+    <title>Smart Spaceship | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./p5.sound.min.js" defer></script>
+    <script src="./Chart.min.js" defer></script>
+    <script src="./obstacle.js" defer></script>
+    <script src="./sketch.js" defer></script>
+    <script src="./dna.js" defer></script>
+    <script src="./population.js" defer></script>
+    <script src="./spaceship.js" defer></script>
+    <script src="./lineChart.js" defer></script>
+    <script src="./supportFunctions.js" defer></script>
+    <script src="./levels.js" defer></script>
+    <script src="./levelBuilder.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/smart-spaceship">
+      <p data-project-fallback role="status">The shared project interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Smart Spaceship</h1>
+        <p class="project-summary">A population of colored ships searches for the green target by evolving movement genes over generations. Successful routes are favored through fitness-weighted selection, crossover, and mutation; gray obstacles can be edited directly on the canvas.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="group" aria-label="Smart Spaceship simulation and generation performance">
+        <section id="generation-chart" class="generation-chart" aria-labelledby="generation-chart-title">
+          <h2 id="generation-chart-title">Finisher and death rate</h2>
+          <div class="generation-chart__canvas">
+            <canvas id="myChart" role="img" aria-label="Stacked chart of death, unfinished, and finisher rates for each completed generation"></canvas>
+          </div>
+        </section>
+        <noscript>JavaScript is required to run the Smart Spaceship simulation.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled aria-labelledby="smart-spaceship-controls">
+        <legend id="smart-spaceship-controls">Simulation settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="sim-speed">
+            Simulation speed
+            <span class="simulation-control__value"><output for="sim-speed">1</output> updates per frame</span>
+            <input id="sim-speed" name="simSpeed" type="range" min="0" max="20" step="1" value="1">
+          </label>
+          <p class="control-hint">0 pauses progress; 1 is the original speed. Higher values run more population updates per rendered frame.</p>
+          <div class="simulation-control-actions">
+            <button id="reset-sim-speed" type="button">Reset speed</button>
+            <button id="skip-next-generation" type="button">Skip to Next Generation</button>
+          </div>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Canvas clicks:</strong> click two points to add a rectangular obstacle between them. Both sides must be at least 5 pixels long.</li>
+          <li><strong>Canvas double-click:</strong> remove the obstacle under the pointer.</li>
+          <li><strong>Simulation speed:</strong> changes population updates per frame immediately; 0 pauses progress and the original default is 1.</li>
+          <li><strong>Reset speed:</strong> restores only the speed setting to its default without restarting the simulation.</li>
+          <li><strong>Skip to Next Generation:</strong> fast-forwards the remaining updates of the current generation until the next generation begins.</li>
+          <li><strong>Restart Simulation:</strong> starts a fresh population at generation 0, clears the chart, and restores the original obstacle course while keeping the current speed setting.</li>
+          <li><strong>Reset Everything:</strong> restores the sketch's default speed and restarts the simulation.</li>
+          <li><strong>Keyboard:</strong> there are no custom keyboard shortcuts. The native controls work with standard keyboard navigation and activation.</li>
+        </ul>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>These plans and constraints are retained from the original source comments:</p>
+        <ul>
+          <li><strong>Simulation architecture and features:</strong> add a simulation class that can run one or more simulations and start a scenario from a chosen generation and lifetime; refactor the code, revisit class responsibilities, and consider a dedicated Genes class; explore simulation speed-up, background execution, showing ships after the first success, highlighting the generation's best ship, GUI controls for constants and generation jumps, and fitness rewards or penalties for speed. The notes also call out hard-coded constants, switches for logic such as killer walls, and combining color and movement mutation. The speed-reward behavior is currently disabled by default. Speed control, generation skipping, and drawing obstacles are already available in this page. See <a href="./sketch.js">sketch.js (lines 11-26)</a>.</li>
+          <li><strong>Gene inheritance:</strong> move color inheritance into the DNA class. See <a href="./dna.js">dna.js (lines 2-5)</a>.</li>
+          <li><strong>Level builder:</strong> improve the map-building code with a dedicated class, support saving maps, consolidate level-related data, and include obstacles, lifetime, and canvas dimensions in that data. See <a href="./levelBuilder.js">levelBuilder.js (lines 1-4)</a>.</li>
+          <li><strong>Parameter experiment:</strong> the notes suggest a population of 10-20 and removing the lower obstacle to make color-lineage changes easier to follow. See <a href="./sketch.js">sketch.js (lines 29-32)</a>.</li>
+          <li><strong>Known constraint:</strong> a ship expects its movement genes to last as long as its lifetime; extending the simulation beyond the gene list can cause an error. See <a href="./spaceship.js">spaceship.js (line 35)</a>.</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
