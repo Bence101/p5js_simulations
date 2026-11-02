@@ -1,20 +1,54 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Traffic Jam Simulator</title>
-  <!-- Include p5.js library -->
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.min.js"></script>
-</head>
-<body>
-  <!-- Information Display Area -->
-  <div id="info-panel">
-    <p id="vehicle-count">Vehicles on Road: 0</p>
-    <p id="collision-count">Total Collisions: 0</p>
-  </div>
-
-  <!-- Canvas will be appended here by p5.js -->
-  <script src="trafficJamSimulator.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Observe cars and trucks following simple speed and safe-distance rules on a ten-lane traffic simulation.">
+    <title>Traffic Jam Simulator | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.min.js" defer></script>
+    <script src="./config.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./road.js" defer></script>
+    <script src="./vehicle.js" defer></script>
+    <script src="./simulation.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/traffic-jam">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Traffic Jam Simulator</h1>
+        <p class="project-summary">Observe traffic on a ten-lane, 300-metre road as cars and trucks accelerate toward their desired speeds and slow when following distances become unsafe. Colliding vehicle pairs stop, are marked with a red outline, and are removed after about two seconds.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="An 800 by 600 traffic simulation showing cars and trucks on a ten-lane road. Vehicles move along the lanes; collision-involved vehicles are outlined in red. Mouse controls are described in How to Use.">
+        <noscript>This simulation requires JavaScript. Enable it to run the simulation.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Live readouts</legend>
+        <div class="simulation-controls__grid">
+          <p>Vehicles on road: <output id="vehicle-count" aria-live="off">0</output></p>
+          <p>Detected collision pairs: <output id="collision-count" aria-live="off">0</output></p>
+        </div>
+        <p class="control-hint">There are no adjustable simulation settings.</p>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Mouse wheel over the canvas:</strong> zoom in or out around the pointer.</li>
+          <li><strong>Left-click the road:</strong> attempt to add a car or truck at that location. The existing safe-distance check rejects placements that are too close to another vehicle.</li>
+          <li><strong>Pan:</strong> start a left-button drag off the road, then move the pointer. A drag that starts on the road does not pan.</li>
+          <li><strong>Automatic traffic:</strong> vehicles accelerate toward their configured desired speed when there is no vehicle ahead in the same lane and decelerate when the gap becomes too small. Cars and trucks have different dimensions and acceleration/speed configurations. Lane-changing behavior is not implemented.</li>
+          <li><strong>Collisions:</strong> involved vehicles stop and receive a red outline, then are removed after about two seconds. The counter increases once for each detected colliding vehicle pair; it is not a count of individual vehicles or collision events.</li>
+          <li><strong>Restart Simulation:</strong> creates a new set of vehicles and resets the collision-pair counter while keeping the current pan and zoom.</li>
+          <li><strong>Reset Everything:</strong> recreates the simulation and restores the default camera position and zoom as well as the collision-pair counter.</li>
+          <li><strong>Keyboard:</strong> there are no custom keyboard shortcuts or canvas keyboard controls.</li>
+        </ul>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>Future idea: implement lane-changing behavior. This is not part of the current simulation; see the note retained in <a href="./vehicle.js">vehicle.js</a>.</p>
+      </div>
+    </main>
+  </body>
 </html>

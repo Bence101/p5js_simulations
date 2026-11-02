@@ -1,0 +1,52 @@
+
+-- létre kell hozni 5-7 ray-t az eyesight osztályba, hogy távolságokat tudjunk felmérni
+-- bele kell tenni egy mover osztályt, ami képes egyszerű input alapján mozogni (jobb, bal, lassul, gyorsul)
+-- bele kell tenni egy genetikus algoritmushoz használható rendszert, logikát
+  -- populáció, szelekció, crossover stb.
+-- létre kell hozni egy neat osztályt, ami együtt tud működni a genetikus rendszerrel
+  -- első körben le kell tesztelni, hogy pl mindenki menjen a pálya közepére...
+
+
+-- gyors pályakészítő modul
+  -- √ az alapja már megvan 
+  -- ha a létrehozás nem bal felső -> jobb alsóból indul, akkor a belső obstacle függvények megzavarodnak
+    -- √ az onIt-re már csináltam orvoslást
+    -- az elkerülő háromszögekkel viszont vannak problémák
+    -- √ elképzelhető, hogy úgy kellene megoldani, hogy ne lehessen nem ilyen irányból létrehozni
+    -- √egyelőre kikezeltem úgy, hogy nem lehet csak a jó irányból létrehozni
+  -- kell egy ki-be kapcsoló gomb (pl mouse mode)
+  
+  
+
+-- ?? creatureController készítés - a creature maga csak egy gyűjtő lenne és az összes logika a cc-ben lenne megalkotva, ilyen cc-ből pedig többet is lehetne csinálni
+  
+-- a korábban megalkotott spacial logika az ugyanaz lehet, mint a hash típus, ezekről youtube videókat néztem és az alapján nagyon hasonlít
+    
+  
+-- known issues ----------------------------------:
+  -- a nagyítás esetén az obstacle creation jelenleg nem jól működik
+  
+-- future tasks ----------------------------------:
+-- obstacle kiegészítés
+  -- lehessen elforgatható, mozgatható
+  -- legyen kör alakú verziója
+  -- jelenleg a sarkokban hülyén viselkedik
+  -- ugrálva történik az elkerülés valamiért
+  
+  
+  
+  
+  
+  
+-- done ------------------------------------------:
+√ kell még egy szenzor osztály, ami képes többek között raycastingra
+√ obstacle avoidance
+  √ jelenleg már megvan a legtöbb összetevő
+  √ át kell alakítani úgy a logikát, hogy amikor a creature jövőbeli helye rajta van egy akadályon, akkor szedje ki az akadály felé néző oldalát és arra hajtson végre egy elkerülést
+  √ ehhez a moverben lehet érdemes létrehozni egy fleeSide vagy hasonló függvényt a pathfinding alapján, mert az már nagyon csúnya
+  √ szebben kellene kezelni a wander átmeneti kikapcsolását
+  √ a kezelést teljes egészében a creature osztályon belül kellene megvalósítani a simulation szinten max egy obstacle listát kapjon meg minden creature
+  √ a falakat is akadályokkal kerültessük el, ezt a board automatán hozza létre
+√ szimuláció lassítás-gyorsítás-megállítás logika implementálása saját osztállyal - végül a utilsba került egyelőre, mert elég volt hozzá egy függvény, később kaphat egy saját osztályt
+
+

@@ -1,0 +1,52 @@
+{
+  "general":
+  {
+    "canvasWidth" : 600,
+    "canvasHeight" : 600
+  },
+  "simulation":
+  {
+    "nCreatures": 1,
+    "creatureProperties": {
+      "eyesight":  {
+        "fieldOfView": 1.1,
+        "viewDistance": 70,
+        "drawFieldOfView": 0,
+        "drawRays": 1
+      }
+    }
+  },
+  "debug": 
+  {
+    "showWanderGuides": 0,
+    "showAvoidSegmentGuides": 0,
+    "showObstacleDebugTriangles": 0
+  },
+  "board2": 
+  { 
+    "boardWidth" : 600,
+    "boardHeight" : 600
+  },
+"board":{ "boardWidth": 600, "boardHeight": 600, "obstacles": [] },
+  "viewTransformer" :
+  {
+    "minZoom" : 0.25,
+    "maxZoom" : 2,
+    "minPanPadding" : 100,
+    "zoomSpeed" : 0.1,
+    "panSpeed" : 2
+  },
+  "keyLayout" :
+  {
+    "restoreViewTransformer" : "r",
+    "fullScreenViewTransformer" : "f",
+    "speedUpSimulation": "+",
+    "speedDownSimulation": "-",
+    "stopRendering": 32,
+    "fastForwardNSimStep": "*",
+    "saveBoard": "s"
+  },
+  "simSpeed": 1,
+  "fastForward": 0,
+  "fastForwardFrameAmount": 1000
+}
