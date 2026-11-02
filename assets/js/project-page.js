@@ -10,6 +10,9 @@ window.ProjectPage = (() => {
     if (typeof adapter?.applySettings !== "function" || typeof adapter?.restart !== "function") {
       throw new Error("The simulation adapter must implement applySettings(settings) and restart(settings).");
     }
+    if (adapter.reset !== undefined && typeof adapter.reset !== "function") {
+      throw new Error("An optional project reset adapter must implement reset(settings).");
+    }
 
     const form = document.getElementById("simulation-controls");
     const fields = document.getElementById("simulation-fields");
@@ -133,6 +136,12 @@ window.ProjectPage = (() => {
       adapter.restart({ ...settings });
     }
 
+    function resetSimulation() {
+      synchronize();
+      const reset = adapter.reset ?? adapter.restart;
+      reset({ ...settings });
+    }
+
     // Keep controls disabled until both initial settings and the simulation are ready.
     restartSimulation();
     connected = true;
@@ -151,7 +160,7 @@ window.ProjectPage = (() => {
     form.addEventListener("reset", () => {
       // The native reset event runs before the browser restores HTML defaults.
       setTimeout(() => {
-        restartSimulation();
+        resetSimulation();
         status.textContent = "All controls restored to defaults. Simulation restarted.";
       }, 0);
     });

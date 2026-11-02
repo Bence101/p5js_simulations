@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Route colored trains through switchable junctions to matching stations in Train of Thought.">
+    <title>Train of Thought | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js" defer></script>
+    <script src="./init.js" defer></script>
+    <script src="./boardGenerator.js" defer></script>
+    <script src="./tile.js" defer></script>
+    <script src="./train.js" defer></script>
+    <script src="./infoTable.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main
+      data-project-page
+      data-project-type="game"
+      data-layout="sidebar"
+      data-restart-label="Restart Game"
+      data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/train-of-though"
+    >
+      <p data-project-fallback role="status">
+        The game interface has not initialized. Game controls remain disabled.
+        <a href="../../index.html">Back to Portfolio</a>.
+      </p>
+      <header data-project-slot="intro">
+        <h1>Train of Thought</h1>
+        <p class="project-summary">
+          Guide colored trains through a changing railway and send each one to a station of the same color.
+          Every round runs automatically, so switch junctions before the trains arrive.
+        </p>
+        <p id="game-goal" class="game-goal">
+          <strong>Goal:</strong> route all 20 trains to matching-color stations and score as many points as possible.
+          Each correct delivery is worth 10 points.
+        </p>
+        <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true">
+          Loading the board and sound effects. Game controls stay disabled until initialization succeeds.
+        </p>
+        <button id="retry-initialization" class="game-recovery" type="button" disabled hidden>
+          Retry Initialization
+        </button>
+      </header>
+      <div
+        id="sketch"
+        class="sketch-stage"
+        data-project-slot="canvas"
+        data-sizing="fixed"
+        role="img"
+        aria-label="Train of Thought game board with colored stations, railway tracks, switchable junctions, moving trains, and a score and train-progress display."
+        aria-describedby="game-goal"
+      >
+        <noscript>JavaScript is required to play Train of Thought.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Game actions</legend>
+        <div class="game-actions">
+          <button id="regenerate-board" type="button">Regenerate Board</button>
+          <button id="full-screen" type="button">Full Screen</button>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><kbd>G</kbd> or <strong>Regenerate Board</strong>: try a new layout, reset the round, and start trains automatically. If generation fails, the current game keeps running and the status explains how to retry.</li>
+          <li><kbd>S</kbd> or <strong>Restart Game</strong>: reset score and train progress on the current board. Junction routes stay as they are.</li>
+          <li><strong>Reset Everything</strong>: reset the round and return every junction to its starting exit. This game has no editable settings; its defaults are defined in <a href="./init.js">init.js</a>.</li>
+          <li><strong>Full Screen</strong>: toggle the whole game page into or out of full screen.</li>
+          <li><strong>Switch a junction:</strong> click a junction tile to change which of its two exits a train will follow. Clicking ordinary track or station tiles does not switch a route. Junction clicks have no keyboard equivalent; dragging is not supported.</li>
+          <li><strong>Route trains:</strong> trains start automatically, one every 150 animation frames, at a speed of 0.020. A round sends 20 trains toward the eight colored stations.</li>
+          <li><strong>Score:</strong> a train arriving at a station of its own color scores 10 points. A train reaching the wrong station finishes with no points. The game ends after all 20 trains finish; the HUD shows score and completed trains.</li>
+          <li><strong>Sound:</strong> junction clicks, train rattling, matching-station horns, wrong-station alerts, and the finish sound play when browser audio is available. Sound is optional; the game remains playable when autoplay is blocked.</li>
+          <li><strong>Keyboard shortcuts:</strong> <kbd>G</kbd> and <kbd>S</kbd> are ignored while you type in or operate a native control.</li>
+        </ul>
+      </div>
+      <div data-project-slot="background">
+        <p>
+          The original game notes link to
+          <a href="https://www.lumosity.com/en/brain-games/train-of-thought/">Lumosity's Train of Thought</a>
+          as inspiration. This is a reference, not an endorsement or an affiliation claim.
+        </p>
+      </div>
+      <div data-project-slot="next-steps">
+        <ul>
+          <li>
+            The original <a href="./devlog.txt">devlog</a> proposes a possible higher-visibility color redesign and illustrated
+            station, tunnel, and train artwork (lines 2-3). These are recorded ideas, not a confirmed outstanding roadmap;
+            the current game already uses color-coded graphics.
+          </li>
+          <li>
+            The devlog also says train sounds should be added (line 4), but sound files and playback calls are present now:
+            see <a href="./utils.js">utils.js</a> and the <a href="./assets/">audio assets</a>. No additional sound work is inferred.
+          </li>
+          <li>
+            The devlog's earlier generation-failure and repeated-regeneration reports (lines 8-11) motivated bounded retries.
+            Regeneration now preserves the current round if a new board cannot be made; the former memory-leak explanation
+            was only a suspicion and is not asserted here.
+          </li>
+          <li>
+            <a href="./tile.js">tile.js</a> (lines 78-82) records an unimplemented idea for drawing parallel track lines while
+            accounting for each tile's entry and exits. The current tracks remain single-width.
+          </li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>

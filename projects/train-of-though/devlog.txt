@@ -1,0 +1,11 @@
+- tasks
+  - color redesign for better visibility
+  - station, tunnel, train pictures instead of the circles, rectangles would be nice
+  - train sounds (whistle, rattling) should be added
+
+
+- known issues
+  - on some rare occasions table generation runs into an error, it is probably caused by a typo or some memory problem
+  - in some cases it is not possible to generate a map, the head the generator runs into a dead end and cannot find a proper route
+    - it can be easily solved: regenerate the board from the start if N tries does not give a good route
+    - if the board regenerated ~30+ times it gets slower, I suspect memory leaks at regenerations

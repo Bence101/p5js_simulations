@@ -99,6 +99,31 @@ a:hover {
   margin-inline: auto;
 }
 
+.project-page[data-project-type="game"] .project-workspace {
+  grid-template-columns: minmax(0, max-content) minmax(17rem, 22rem);
+  justify-content: center;
+}
+
+.project-page[data-project-type="game"] .sketch-stage {
+  width: var(--canvas-logical-width);
+  max-width: 100%;
+}
+
+.game-status {
+  margin: 0.75rem 0 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.game-recovery {
+  margin-top: 0.75rem;
+}
+
+.game-actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
 .project-workspace > * {
   min-width: 0;
 }
@@ -301,5 +326,13 @@ fieldset:disabled input {
 @media (max-width: 800px) {
   .project-workspace {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-page[data-project-type="game"] .project-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-page[data-project-type="game"] .sketch-stage {
+    margin-inline: auto;
   }
 }

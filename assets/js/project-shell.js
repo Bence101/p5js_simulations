@@ -121,6 +121,10 @@
     }
   }
 
+  if (root.dataset.restartLabel) {
+    fragment.querySelector("#restart-simulation").textContent = root.dataset.restartLabel;
+  }
+
   root.classList.add("project-page");
   root.replaceChildren(fragment);
   // The shared outer fieldset now keeps these original controls disabled until connection.

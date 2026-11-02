@@ -1,0 +1,25 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+.nature-simulation-page .nature-visual-stage {
+  aspect-ratio: auto;
+  overflow: visible;
+  background: transparent;
+  color: inherit;
+}
+
+.nature-simulation-page .nature-chart {
+  width: min(100%, 400px);
+  height: 200px;
+  margin-top: 1.5rem;
+}
+
+.nature-simulation-page .nature-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

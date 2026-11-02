@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore an evolving ecosystem of agents, grass, and changing populations.">
+    <title>Nature Simulator | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js" defer></script>
+    <script src="./sketch.js" defer></script>
+    <script src="./agent.js" defer></script>
+    <script src="./grass.js" defer></script>
+    <script src="./statusBar.js" defer></script>
+    <script src="./supportFunctions.js" defer></script>
+    <script src="./lineChart.js" defer></script>
+  </head>
+  <body>
+    <main class="nature-simulation-page" data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/nature-simulation">
+      <p data-project-fallback role="status">The shared project interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Nature Simulator</h1>
+        <p class="project-summary">Explore a small ecosystem of autonomous agents that wander, forage for grass, reproduce when healthy, and disappear as their health runs down. Grass reappears over time, while a live chart tracks agent and grass counts. The simulation keeps its original 600 by 400 logical canvas and behavior.</p>
+      </header>
+      <div id="sketch" class="sketch-stage nature-visual-stage" data-project-slot="canvas" data-sizing="fixed" role="group" aria-label="Nature simulation and population chart">
+        <section id="population-chart" class="nature-chart" aria-labelledby="population-chart-heading">
+          <h2 id="population-chart-heading">Population over time</h2>
+          <canvas id="myChart" role="img" aria-label="Stacked line chart of agent and grass counts by simulation frame"></canvas>
+        </section>
+        <noscript>JavaScript is required to run the simulation and population chart.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Population settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="initial-agents">
+            Initial agents
+            <span class="simulation-control__value"><output for="initial-agents">100</output> agents</span>
+            <input id="initial-agents" name="initialAgents" type="range" min="0" max="200" step="1" value="100">
+          </label>
+          <label class="simulation-control" for="initial-grass">
+            Initial grass
+            <span class="simulation-control__value"><output for="initial-grass">50</output> patches</span>
+            <input id="initial-grass" name="initialGrass" type="range" min="0" max="200" step="1" value="50">
+          </label>
+          <label class="simulation-control" for="grass-spawn-interval">
+            Grass spawn interval
+            <span class="simulation-control__value">Every <output for="grass-spawn-interval">10</output> frames</span>
+            <input id="grass-spawn-interval" name="grassSpawnInterval" type="range" min="1" max="120" step="1" value="10">
+          </label>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Keyboard:</strong> there are no custom simulation shortcuts. Use Tab or Shift+Tab to reach controls; the native sliders respond to arrow keys, and buttons activate with Enter or Space.</li>
+          <li><strong>Mouse:</strong> the simulation canvas has no mouse controls. Hover over chart points to inspect Chart.js tooltips; this chart interaction has no keyboard equivalent.</li>
+          <li><strong>Initial agents:</strong> choose 0-200 starting agents (default 100). This setting takes effect when the simulation is restarted.</li>
+          <li><strong>Initial grass:</strong> choose 0-200 starting grass patches (default 50). This setting takes effect when the simulation is restarted.</li>
+          <li><strong>Grass spawn interval:</strong> choose 1-120 frames between new grass patches (default 10). Changes apply live while the simulation runs.</li>
+          <li><strong>Restart Simulation:</strong> clears the population chart and starts a new simulation using the current settings without changing the controls.</li>
+          <li><strong>Reset Everything:</strong> restores the sketch defaults, updates all slider outputs, clears the chart, and starts a new simulation.</li>
+        </ul>
+        <p>The population chart samples agent and grass counts every 60 simulation frames.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <ul>
+          <li>Investigate the noted case where multiple agents may retain a reference to one grass patch after it has been eaten or removed. See the original note in <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/nature-simulation/sketch.js#L1-L2">sketch.js, lines 1-2</a>.</li>
+          <li>Explore evolving field of view and the food threshold for reproduction first, then agent speed; the note proposes observing field of view increase and the minimum food requirement decrease across generations, without adding controls in the first iteration. See <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/nature-simulation/sketch.js#L4-L7">sketch.js, lines 4-7</a>.</li>
+          <li>Separate health from hunger, as planned in <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/nature-simulation/agent.js#L28-L29">agent.js, lines 28-29</a>.</li>
+          <li>Complete the documented decision roadmap: check for enemies and flee, seek a capable mate, search for nearby food, and otherwise choose a random target. These are plans rather than implemented behaviors; see <a href="https://github.com/Bence101/p5js_simulations/blob/main/projects/nature-simulation/agent.js#L189-L203">agent.js, lines 189-203</a>.</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
