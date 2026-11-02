@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Watch a turquoise point trace a persistent random-walk trail across a gray square canvas.">
+    <title>Random Walk | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./p5.sound.min.js" defer></script>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/random-walk">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Random Walk</h1>
+        <p class="project-summary">A turquoise point takes random steps across a gray square canvas, leaving a persistent trail. Change its color or step range while it moves, and click the canvas to clear the marks.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="A turquoise random-walk trail on a gray square canvas">
+        <noscript>This simulation requires JavaScript. Enable it to run the simulation and use its controls.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Walk settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="walk-color">
+            Trail color
+            <input id="walk-color" name="color" type="color" value="#64c8c8">
+          </label>
+          <label class="simulation-control" for="walk-step">
+            Maximum step distance
+            <span class="simulation-control__value"><output for="walk-step">5</output> px per axis</span>
+            <input id="walk-step" name="maxStep" type="range" min="0" max="10" step="0.5" value="5">
+          </label>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Canvas mouse action:</strong> click the canvas to clear the trail. While the mouse button is held down, drawing and movement pause.</li>
+          <li><strong>Keyboard shortcuts:</strong> none. Use Tab to reach the controls; arrow keys adjust the slider, the color picker uses its native controls, and Enter or Space activates the page buttons.</li>
+          <li><strong>Trail color:</strong> changes the walker's color immediately.</li>
+          <li><strong>Maximum step distance (0–10 px per axis):</strong> changes the range of each independently randomized horizontal and vertical step immediately. The default of 5 preserves the original range.</li>
+          <li><strong>Restart Simulation:</strong> clears the canvas and returns the walker to its starting point and direction, keeping the current settings.</li>
+          <li><strong>Reset Everything:</strong> restores the sketch defaults and restarts the simulation.</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
