@@ -2,17 +2,17 @@ let canvas;
 let simulation;
 let HUD;
 let SETTINGS = {};
+let initialSettings;
 let userInputController = new UserInputController();
 let boardManipulator = new BoardManipulator();
 
 function preload() {
-  SETTINGS = loadJSON('settings.json');
+  SETTINGS = loadJSON('./settings.json');
 }
 
 
-// ViewTransformer inits
 let viewTransformerControls = {
-  /*from   www. de m  o2 s .  c  om*/ view: { x: 0, y: 0, zoom: 1 },
+  view: { x: 0, y: 0, zoom: 1 },
   viewPos: { prevX: null, prevY: null, isDragging: false },
 };
 

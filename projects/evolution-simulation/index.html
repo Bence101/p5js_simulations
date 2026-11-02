@@ -1,33 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A p5.js creature obstacle-avoidance prototype with a fixed board, one forward ray, and editable rectangular obstacles.">
+    <title>Creature Obstacle-Avoidance Prototype | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js" defer></script>
+    <script src="./utils.js" defer></script>
+    <script src="./transform.js" defer></script>
+    <script src="./mover.js" defer></script>
+    <script src="./eyesight.js" defer></script>
+    <script src="./obstacle.js" defer></script>
+    <script src="./board.js" defer></script>
+    <script src="./creature.js" defer></script>
+    <script src="./simulation.js" defer></script>
+    <script src="./infoTable.js" defer></script>
+    <script src="./hud.js" defer></script>
+    <script src="./viewTransformer.js" defer></script>
+    <script src="./init.js" defer></script>
+    <script src="./main.js" defer></script>
   </head>
   <body>
-    <script src="main.js"></script>
-    <script src="simulation.js"></script>
-    <script src="creature.js"></script>
-    <script src="food.js"></script>
-    <script src="hud.js"></script>
-    <script src="obstacle.js"></script>
-    <script src="transform.js"></script>
-    <script src="mover.js"></script>
-    <script src="eyesight.js"></script>
-
-    <script src="board.js"></script>
-    <script src="utils.js"></script>
-
-    <script src="init.js"></script>
-    <script src="viewTransformer.js"></script>
-
-    <script src="infoTable.js"></script>
-
-
-
-
+    <main data-project-page data-layout="stacked" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/evolution-simulation">
+      <p data-project-fallback role="status">The shared project interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Creature Obstacle-Avoidance Prototype</h1>
+        <p class="project-summary">An early p5.js prototype for creatures navigating a bounded board with rectangular obstacles. Creatures start at random positions and velocities and use a single forward ray for obstacle detection and avoidance; evolution, learning, and multi-ray vision are not implemented.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="Fixed 600 by 600 simulation board with moving creatures, border walls, user-created rectangular obstacles, and ray and field-of-view visuals">
+        <noscript>JavaScript is required to run this p5.js simulation.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Simulation settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="creature-count">
+            Creature count
+            <span class="simulation-control__value"><output for="creature-count"></output> (restart required)</span>
+            <input id="creature-count" name="nCreatures" type="range" min="1" max="20" step="1">
+          </label>
+          <label class="simulation-control" for="view-distance">
+            Sight distance
+            <span class="simulation-control__value"><output for="view-distance"></output> px</span>
+            <input id="view-distance" name="viewDistance" type="range" min="20" max="200" step="5">
+          </label>
+          <label class="simulation-control" for="field-of-view">
+            Field-of-view arc half-angle
+            <span class="simulation-control__value"><output for="field-of-view"></output> radians</span>
+            <input id="field-of-view" name="fieldOfView" type="range" min="0" max="3.14" step="0.05">
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="draw-rays">
+            <input id="draw-rays" name="drawRays" type="checkbox">
+            Draw the obstacle-detection ray (live)
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="draw-field-of-view">
+            <input id="draw-field-of-view" name="drawFieldOfView" type="checkbox">
+            Draw the field-of-view arc (live)
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="show-avoid-guides">
+            <input id="show-avoid-guides" name="showAvoidSegmentGuides" type="checkbox">
+            Show obstacle-avoidance guides (live)
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="show-obstacle-triangles">
+            <input id="show-obstacle-triangles" name="showObstacleDebugTriangles" type="checkbox">
+            Show obstacle-side debug triangles (live)
+          </label>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Arrow keys:</strong> steer the first creature left or right and increase or decrease its speed. <strong>Q</strong> stops it.</li>
+          <li><strong>R:</strong> restore the view. <strong>F:</strong> fit the board. <strong>+</strong> and <strong>-</strong> change simulation speed.</li>
+          <li><strong>Space:</strong> pause or resume the p5 draw loop. <strong>*:</strong> fast-forward by 1,000 simulation steps. <strong>S:</strong> update the board JSON output below.</li>
+          <li><strong>Left mouse button:</strong> drag from the top-left toward the bottom-right to add a rectangular obstacle; double-click an obstacle to remove it.</li>
+          <li><strong>Middle mouse button:</strong> drag to pan. <strong>Mouse wheel:</strong> zoom. While any mouse button is held, all creatures seek the pointer.</li>
+          <li>While paused, the draw loop stops, so creature movement, board editing, panning, and zooming resume only after the loop is restarted.</li>
+          <li><strong>Creature count:</strong> 1–20 creatures; this setting applies on restart. The interface caps the count at 20 to keep this prototype responsive.</li>
+          <li><strong>Sight distance:</strong> sets the single ray's length and the avoidance look-ahead distance; it applies live.</li>
+          <li><strong>Field-of-view arc half-angle:</strong> adjusts the displayed arc only. It does not change obstacle perception, which still uses one forward ray; it applies live.</li>
+          <li><strong>Draw ray / field-of-view arc:</strong> toggles the ray and visual arc independently; both apply live.</li>
+          <li><strong>Debug overlays:</strong> show obstacle-avoidance guides and obstacle-side triangles; both apply live.</li>
+          <li><strong>Restart Simulation:</strong> recreates the creatures using current settings and preserves user-created obstacles, the view, simulation speed, and pause state.</li>
+          <li><strong>Reset Everything:</strong> restores the settings defaults, removes user-created obstacles, restores the initial view and simulation speed, and resumes the draw loop.</li>
+        </ul>
+      </div>
+      <section data-project-slot="next-steps">
+        <ul>
+          <li>Expand the current single ray to 5–7 eyesight rays, then explore population-based genetic algorithms and a compatible NEAT component. An initial experiment proposed in the notes is to test creatures moving toward the board center. See <a href="./__ToDO.txt#L2">the original planning notes, lines 2–7</a>.</li>
+          <li>Consider a mouse-mode toggle for board editing. Rectangles currently require a top-left-to-bottom-right drag; the notes mark this direction constraint as handled but still call out problems with avoidance triangles. See <a href="./__ToDO.txt#L10">the board-manipulation notes</a>.</li>
+          <li>Obstacle creation is inaccurate while zoomed. See <a href="./__ToDO.txt#L26">the known-issues note</a>.</li>
+          <li>Explore obstacle rotation, movement, and circular shapes, and address corner behavior and jittery avoidance. The obstacle-side selection comment describes a possible corner case involving both current and projected creature positions; the mover comment also notes future-position handling for narrow obstacles. See <a href="./__ToDO.txt#L30">the obstacle plans</a>, <a href="./obstacle.js#L82">the corner-side note</a>, and <a href="./mover.js#L127">the future-position note</a>.</li>
+          <li>As exploratory design investigations, consider separating behavior into a CreatureController and compare the existing spatial logic with spatial hashing. See <a href="./__ToDO.txt#L21">the exploratory notes</a>.</li>
+          <li>Project comments also suggest extracting creature behavior, refactoring board manipulation to reduce global dependencies, and revisiting the simulation-speed helper. These are code-organization ideas, not implemented features: see <a href="./creature.js#L16">creature behavior notes</a>, <a href="./board.js#L113">board-manipulator notes</a>, and <a href="./utils.js#L10">speed-control notes</a>.</li>
+        </ul>
+      </section>
+      <section data-project-slot="extra" aria-labelledby="board-json-title">
+        <h2 id="board-json-title">Board JSON</h2>
+        <p id="board-json-status" role="status">Press S to update the JSON. Select the text to copy it.</p>
+        <label class="simulation-control" for="board-json-output">Current board settings</label>
+        <textarea id="board-json-output" rows="12" readonly aria-live="polite"></textarea>
+      </section>
+    </main>
   </body>
 </html>

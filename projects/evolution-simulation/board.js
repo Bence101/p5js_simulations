@@ -26,9 +26,13 @@ class Board {
       }
       boardDict.obstacles.push(obstacleDict)
     }
-    let paragraph = createP(JSON.stringify(boardDict, null, 2))
-    paragraph.style('color', '#777777')
-    paragraph.html('"board":' + JSON.stringify(boardDict, null, 2))
+    const output = document.getElementById("board-json-output");
+    const status = document.getElementById("board-json-status");
+    if (!(output instanceof HTMLTextAreaElement) || !status) {
+      throw new Error("The accessible board JSON output is missing from the project page.");
+    }
+    output.value = JSON.stringify({ board: boardDict }, null, 2);
+    status.textContent = "Board JSON updated. Select the text to copy it.";
   }
   
   createSavedObstacles() {
@@ -48,7 +52,9 @@ class Board {
   
   
   addObstacle(startPoint, size, settings) {    
-    this.obstacles.push(new Obstacle(startPoint, size, settings))
+    const obstacle = new Obstacle(startPoint, size, settings);
+    this.obstacles.push(obstacle);
+    return obstacle;
   }
     
   removeObstacle(pos, all = false) {
@@ -147,8 +153,10 @@ class BoardManipulator {
       let nextWidth = this.mousePosList[1].x - this.mousePosList[0].x
       let nextHeight = this.mousePosList[1].y - this.mousePosList[0].y
       if ((nextWidth>0) && (nextHeight>0)) {
-        simulation.board.addObstacle(this.mousePosList[0], 
-                                     [nextWidth, nextHeight], SETTINGS)
+        const obstacle = simulation.board.addObstacle(this.mousePosList[0],
+                                                      [nextWidth, nextHeight],
+                                                      SETTINGS);
+        obstacle.userCreated = true;
       }
     }
     this.mousePosList = [];

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-labelledby="title description">
+  <title id="title">Creature obstacle-avoidance preview</title>
+  <desc id="description">A green triangular creature follows one gray ray across a board with rectangular obstacles and border walls.</desc>
+  <rect width="600" height="600" fill="#c8c8c8"/>
+  <rect x="10" y="10" width="580" height="580" fill="#cccccc"/>
+  <g fill="#32c8c8" fill-opacity=".5" stroke="#0064dc" stroke-width="2">
+    <path d="M0 0h600v10H0zM0 590h600v10H0zM0 0h10v600H0zM590 0h10v600h-10z"/>
+    <rect x="365" y="185" width="130" height="110"/>
+    <rect x="120" y="420" width="150" height="75"/>
+  </g>
+  <g fill="none" stroke="#ff0000" stroke-width="2">
+    <path d="M0 10h600M10 0v600M590 0v600M0 590h600"/>
+  </g>
+  <path d="M300 350 391 240" fill="none" stroke="#646464" stroke-width="2"/>
+  <circle cx="391" cy="240" r="5" fill="#646464"/>
+  <path d="M300 350 290 378 310 378Z" fill="#64ff64"/>
+  <g font-family="system-ui, sans-serif" font-size="10" fill="#fff">
+    <rect x="0" y="0" width="104" height="30" fill="#000" fill-opacity=".2"/>
+    <text x="5" y="13">FPS: 60</text>
+    <text x="55" y="13">simStep:</text>
+    <text x="5" y="26">Creature + single ray</text>
+  </g>
+</svg>
