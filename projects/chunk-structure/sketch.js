@@ -1,105 +1,93 @@
-let displaySim = 1;
+const DEFAULTS = {
+  subdivisions: 8,
+  cellCount: 200,
+  probeCount: 20,
+  checkProbeNeighbors: true,
+  showGridAndEntities: true
+};
+const DEFAULT_MOUSE_RADIUS = 15;
 
-let GRIDSUBDIVS = 8;
-let checkCollisions = 1;
-let n_cells = 200;
-let n_mover = 20;
-
-
-let cells;
-let movers;
+let subdivisions = DEFAULTS.subdivisions;
+let checkProbeNeighbors = DEFAULTS.checkProbeNeighbors;
+let showGridAndEntities = DEFAULTS.showGridAndEntities;
+let cells = [];
+let movers = [];
 let uniformGridSpace;
-let mousePoint;
+let mouseCell;
 let infoTable;
 let nCollCheck = 0;
-let nFrame = 0;
-
-
 
 function setup() {
-  createCanvas(800, 600);
-  infoTable = new InfoTable(createVector(10,10), []);
+  const canvas = createCanvas(800, 600);
+  canvas.parent("sketch");
+  infoTable = new InfoTable(createVector(10, 10), []);
+  mouseCell = new Cell(createVector(mouseX, mouseY), color(200, 0, 0));
 
-  cells = [];
-  movers = []
-
-  mouseCell = new Cell(createVector(mouseX, mouseY), color(200, 0,0));
-  mouseCell.radius = 15;
-  
-  for (let i = 0; i < n_cells; i++) {
-    cells[i] = new Cell(createVector(random(0, width), random(0, height)));
-  }
-  
-  for (let i = 0; i < n_mover; i++) {
-    movers[i] = new Cell(createVector(random(0, width), random(0, height)),
-                                       color(200, 100, 100, 200));
-  }
+  window.ProjectPage.connect({
+    canvas,
+    defaults: DEFAULTS,
+    applySettings(settings) {
+      checkProbeNeighbors = settings.checkProbeNeighbors;
+      showGridAndEntities = settings.showGridAndEntities;
+    },
+    restart(settings) {
+      subdivisions = settings.subdivisions;
+      cells = Array.from({ length: settings.cellCount }, () =>
+        new Cell(createVector(random(0, width), random(0, height))));
+      movers = Array.from({ length: settings.probeCount }, () =>
+        new Cell(createVector(random(0, width), random(0, height)),
+          color(200, 100, 100, 200)));
+      mouseCell.radius = DEFAULT_MOUSE_RADIUS;
+      nCollCheck = 0;
+    }
+  });
 }
 
-
-
-
 function draw() {
-  nFrame++;
   background(220);
-  uniformGridSpace = new UniformGridSpace(createVector(width, height), GRIDSUBDIVS);
+  uniformGridSpace = new UniformGridSpace(createVector(width, height), subdivisions);
   mouseCell.pos = createVector(mouseX, mouseY);
   mouseCell.update();
-  
-  for (let cell of cells) {
-    // mouseCell.isSeen(cell.pos);
+
+  for (const cell of cells) {
     cell.update();
     uniformGridSpace.insert(cell, cell.pos, cell.radius);
   }
-  // uniformGridSpace.insert(mouseCell, mouseCell.pos, mouseCell.radius);
-  
-  
-  for (let mover of movers) {
+
+  for (const mover of movers) {
     mover.randomMove(5);
-    if (checkCollisions) {
-      cellsToCheck = uniformGridSpace.queryRangeCircle(mover.pos,
-                                                        mover.radius)
-      for (let cell of cellsToCheck) {
+    if (checkProbeNeighbors) {
+      const cellsToCheck = uniformGridSpace.queryRangeCircle(mover.pos, mover.radius);
+      for (const cell of cellsToCheck) {
         cell.tested = 1;
         cell.isSeen(mover.pos, mover.radius);
-        nCollCheck+=1;
+        nCollCheck += 1;
       }
     }
   }
-  
-  
-  // mouse check
-  cellsToCheck = uniformGridSpace.queryRangeCircle(mouseCell.pos,
-                                                    mouseCell.radius)
-  for (let cell of cellsToCheck) {
+
+  const mouseCandidates = uniformGridSpace.queryRangeCircle(mouseCell.pos, mouseCell.radius);
+  for (const cell of mouseCandidates) {
     cell.tested = 1;
     cell.isSeen(mouseCell.pos, mouseCell.radius);
-    nCollCheck+=1;
+    nCollCheck += 1;
   }
-  
-  // display
-  if (displaySim) {
-    uniformGridSpace.display()
 
-    for (let cell of cells) {
+  if (showGridAndEntities) {
+    uniformGridSpace.display();
+    for (const cell of cells) {
       cell.display();
     }
-    for (let mover of movers) {
+    for (const mover of movers) {
       mover.display();
-    }  
+    }
   }
 
   mouseCell.display();
-  
-  infoTable.update(createVector(10,10), 
-                   [{'name': 'nCollCh', 'value':   Math.round(nCollCheck/1000)},
-                    {'name': 'FPS', 'value':   Math.round(frameRate())}
-                    ])
+
+  infoTable.update(createVector(10, 10), [
+    { name: "Checks (k)", value: Math.round(nCollCheck / 1000) },
+    { name: "FPS", value: Math.round(frameRate()) }
+  ]);
   infoTable.display();
 }
-
-
-
-
-
-

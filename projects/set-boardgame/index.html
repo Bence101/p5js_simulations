@@ -1,15 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Play a SET-style card puzzle and use the built-in solver to reveal a valid trio.">
+    <title>Set Boardgame | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js" defer></script>
+    <script src="./sketch.js" defer></script>
   </head>
   <body>
-    <main>
+    <main
+      data-project-page
+      data-project-type="game"
+      data-layout="sidebar"
+      data-restart-label="Restart Game"
+      data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/set-boardgame"
+    >
+      <p data-project-fallback role="status">
+        The game interface has not initialized. Game controls remain disabled.
+        <a href="../../index.html">Back to Portfolio</a>.
+      </p>
+      <header data-project-slot="intro">
+        <h1>Set Boardgame</h1>
+        <p class="project-summary">
+          Find matching patterns in a randomly generated board of cards. Play by selecting cards yourself, or use the built-in solver to reveal a valid set.
+        </p>
+        <p id="game-goal" class="game-goal">
+          <strong>Goal:</strong> select three cards whose color, shading, and symbol pattern are each either all the same or all different.
+        </p>
+        <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true">
+          Loading the board. Game controls stay disabled until initialization succeeds.
+        </p>
+      </header>
+      <div
+        id="sketch"
+        class="sketch-stage"
+        data-project-slot="canvas"
+        data-sizing="fixed"
+        role="img"
+        aria-label="A 560 by 420 SET-style card board with twelve cards in four columns and three rows."
+        aria-describedby="game-goal game-status"
+      >
+        <noscript>JavaScript is required to play the game and use its solver.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Game actions</legend>
+        <div class="game-actions">
+          <button id="find-set" type="button">Find a Set</button>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <ul>
+          <li><strong>Click a card:</strong> select or deselect up to three cards. A valid trio has the same value on all three cards or a different value on every card for each feature. Valid sets are confirmed and deselected automatically. If a trio is invalid, click one selected card to remove it before trying another combination.</li>
+          <li><strong>Find a Set:</strong> the solver checks the current board and outlines one valid trio in green. Select those cards to submit the set. If none exists, the status message recommends starting a new board.</li>
+          <li><strong>Restart Game:</strong> deals 12 new random cards and clears selections and solver highlights.</li>
+          <li><strong>Reset Everything:</strong> deals a new board too; there are no editable settings to restore.</li>
+          <li><strong>Mouse:</strong> clicking empty canvas space has no effect. Card selection is mouse-only and has no keyboard equivalent.</li>
+          <li><strong>Keyboard:</strong> there are no custom shortcuts. Use Tab to reach the game actions and Enter or Space to activate them; the shared restart and reset buttons work the same way.</li>
+        </ul>
+        <p><strong>Card features:</strong> the board has 12 randomly generated cards. Each card has a color, a shading (outline, solid, or pale), and a symbol pattern. Shape and number of symbols combine as one feature. Some boards may not contain a set, so use the solver to check before restarting.</p>
+      </div>
     </main>
-    <script src="sketch.js"></script>
   </body>
 </html>

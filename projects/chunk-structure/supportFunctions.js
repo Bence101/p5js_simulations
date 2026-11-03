@@ -5,13 +5,20 @@
 // }
 
 function keyPressed() {
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLElement
+    && activeElement.matches("input, select, textarea, [contenteditable='true']")) {
+    return;
+  }
 
   if (keyCode === 68) {
-    mouseCell.radius+=5;
+    mouseCell.radius += 5;
+  } else if (keyCode === 65) {
+    mouseCell.radius -= 5;
+  } else {
+    return;
   }
-  if (keyCode === 65) {
-    mouseCell.radius-=5;
-  }
+
   print(mouseCell.radius)
 }
 
@@ -62,7 +69,6 @@ function constrainBorder(vector, mode='teleport') {
   }
   return outputVector
 }
-
 
 
 

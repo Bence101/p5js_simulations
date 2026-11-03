@@ -36,4 +36,8 @@ projects/
 
 [Bouncing Ball](./bouncing-ball/index.html) is the compact **sidebar** reference; its [README](./bouncing-ball/README.md) lists the controls and expected behavior. [Random Walk](./random-walk/index.html) is another fixed-size sidebar project, with its behavior and controls documented in its [README](./random-walk/README.md). [Particle Life](./particle-life/index.html) is the complex **stacked** reference; its [README](./particle-life/README.md) documents the full interaction matrix, extra actions, preserved controls, and fixed canvas sizing. [Learning Snake](./learning-snake/index.html) also uses the shared shell, with fixed 700&times;700 sizing, one speed control, and a project-owned generation chart (see its [README](./learning-snake/README.md)).
 
+[Chunk Structure](./chunk-structure/index.html) is a fixed 800&times;600 sidebar project using a uniform grid to narrow proximity checks; its [README](./chunk-structure/README.md) documents the settings, shortcuts, and original next-step note.
+
+[Set Boardgame](./set-boardgame/index.html) is a fixed 560&times;420 card game with a built-in solver that reveals a valid set; its [README](./set-boardgame/README.md) documents the game rules, solver, and mouse-only canvas interaction.
+
 There is no build or test framework. Check changed JavaScript syntax and asset paths, then serve locally and inspect the console/network, both navigation links, live updates, restart with unchanged controls, full default reset, aspect ratio and resize bounds, keyboard accessibility, and desktop/mobile overflow. Test under a non-root URL prefix to reflect GitHub Pages hosting. See the [agent guidance](../agents.md) for the full integration checklist.

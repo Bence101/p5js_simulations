@@ -1,17 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore a uniform grid that narrows proximity checks around moving probes and the mouse.">
+    <title>Chunk Structure | p5.js Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../assets/js/project-shell.js" defer></script>
+    <script src="../../assets/js/project-page.js" defer></script>
+    <script src="./p5.js" defer></script>
+    <script src="./p5.sound.min.js" defer></script>
+    <script src="./sketch.js" defer></script>
+    <script src="./Cell.js" defer></script>
+    <script src="./UniformGridSpace.js" defer></script>
+    <script src="./InfoTable.js" defer></script>
+    <script src="./supportFunctions.js" defer></script>
   </head>
   <body>
-    <script src="sketch.js"></script>
-    <script src="Cell.js"></script>
-    <script src="UniformGridSpace.js"></script>
-    <script src="InfoTable.js"></script>
-    <script src="supportFunctions.js"></script>
+    <main data-project-page data-layout="sidebar" data-source-url="https://github.com/Bence101/p5js_simulations/tree/main/projects/chunk-structure">
+      <p data-project-fallback role="status">The shared page interface has not initialized. Simulation controls remain disabled. <a href="../../index.html">Back to Portfolio</a>.</p>
+      <header data-project-slot="intro">
+        <h1>Chunk Structure</h1>
+        <p class="project-summary">Explore how a uniform grid partitions a two-dimensional field and narrows the candidate cells checked around moving probes and the mouse. Adjust the grid resolution and population to compare the search workload while nearby cells are highlighted.</p>
+      </header>
+      <div id="sketch" class="sketch-stage" data-project-slot="canvas" data-sizing="fixed" role="img" aria-label="An 800 by 600 simulation with a uniform grid, randomly placed cells, moving probes, and a mouse-following search circle">
+        <noscript>This simulation requires JavaScript. Enable it to run the simulation and use its controls.</noscript>
+      </div>
+      <fieldset data-project-slot="controls" disabled>
+        <legend>Simulation settings</legend>
+        <div class="simulation-controls__grid">
+          <label class="simulation-control" for="grid-subdivisions">
+            Grid subdivisions
+            <span class="simulation-control__value"><output for="grid-subdivisions">8</output> per axis</span>
+            <input id="grid-subdivisions" name="subdivisions" type="range" min="1" max="16" step="1" value="8">
+          </label>
+          <label class="simulation-control" for="cell-count">
+            Static cells
+            <span class="simulation-control__value"><output for="cell-count">200</output></span>
+            <input id="cell-count" name="cellCount" type="range" min="0" max="500" step="10" value="200">
+          </label>
+          <label class="simulation-control" for="probe-count">
+            Moving probes
+            <span class="simulation-control__value"><output for="probe-count">20</output></span>
+            <input id="probe-count" name="probeCount" type="range" min="0" max="100" step="1" value="20">
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="probe-checks">
+            <input id="probe-checks" name="checkProbeNeighbors" type="checkbox" checked>
+            Check moving-probe neighborhoods
+          </label>
+          <label class="simulation-control simulation-control--checkbox" for="show-grid">
+            <input id="show-grid" name="showGridAndEntities" type="checkbox" checked>
+            Show grid and population
+          </label>
+        </div>
+      </fieldset>
+      <div data-project-slot="help">
+        <p><strong>Shortcuts and interactions</strong></p>
+        <ul>
+          <li><strong>Move the mouse over the canvas:</strong> the red search circle follows the pointer and checks nearby cells.</li>
+          <li><strong>A / D:</strong> decrease or increase the mouse search radius by 5 logical pixels. These shortcuts are inactive while a form control has focus.</li>
+          <li><strong>Canvas clicks:</strong> there is no click or drag action; pointer movement is the canvas interaction.</li>
+        </ul>
+        <p><strong>Settings</strong></p>
+        <ul>
+          <li><strong>Grid subdivisions (1–16 per axis):</strong> changes the uniform grid resolution after restarting.</li>
+          <li><strong>Static cells (0–500):</strong> chooses how many randomly positioned cells to create on restart.</li>
+          <li><strong>Moving probes (0–100):</strong> chooses how many randomly positioned probes to create on restart.</li>
+          <li><strong>Check moving-probe neighborhoods:</strong> enables or disables proximity checks for moving probes immediately. The mouse-following search remains active either way.</li>
+          <li><strong>Show grid and population:</strong> toggles the grid, cells, and moving probes immediately. The mouse search circle remains visible.</li>
+          <li><strong>Restart Simulation:</strong> recreates the cell and probe populations using the current settings, clears the cumulative check counter, and restores the mouse radius to 15 px without changing the controls.</li>
+          <li><strong>Reset Everything:</strong> restores the sketch defaults and restarts the simulation.</li>
+        </ul>
+        <p>The overlay reports cumulative candidate checks in thousands and the current frame rate. Use Tab to move through controls, arrow keys to adjust sliders, Space to toggle checkboxes, and Enter or Space to activate buttons.</p>
+      </div>
+      <div data-project-slot="next-steps">
+        <p>The original notes identify a future refactor: update <code>constrainBorder()</code> so it no longer depends on p5.js global canvas dimensions. See <a href="./supportFunctions.js#L28">supportFunctions.js, line 28</a>.</p>
+      </div>
+    </main>
   </body>
 </html>
